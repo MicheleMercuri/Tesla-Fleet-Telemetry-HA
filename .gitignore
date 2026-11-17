@@ -1,0 +1,25 @@
+# configurazione e segreti locali: mai in git
+tools/config.json
+.env
+*token*
+.ha_token
+*.key
+*.pem
+*.crt
+*.gpg
+*.tar
+*.tar.gz
+*.parziale
+*.log
+# file generati: contengono il VIN o dipendono dal proprio impianto
+homeassistant/*.yaml
+appdaemon/telemetria_avvisi.json
+# editor, Python e sistema
+.vscode/
+.idea/
+*.code-workspace
+__pycache__/
+*.pyc
+desktop.ini
+Thumbs.db
+.DS_Store

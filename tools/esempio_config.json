@@ -1,0 +1,36 @@
+{
+  "_nota": "Copiare in config.json (escluso da git) e compilare. Spiegazione di ogni voce nel README, sezione Tools on the PC.",
+  "ha_url": "http://homeassistant.local:8123",
+  "ha_token_file": "~/.ha_token",
+
+  "telemetry_hostname": "telemetry.example.com",
+  "telemetry_port": 4443,
+  "topic_base": "telemetria_tesla",
+  "config_days": 360,
+  "private_dir": "~/.telemetria_tesla",
+
+  "vin": "",
+  "vin_entity": "binary_sensor.tesla_online",
+  "firmware_entity": "",
+  "expiry_helper": "input_datetime.telemetria_tesla_scadenza",
+
+  "token_source": "tesla_custom",
+  "core_config_entries": "//homeassistant.local/config/.storage/core.config_entries",
+  "token_file": "",
+
+  "proxy_url": "https://homeassistant.local:4430",
+  "proxy_cert": "//homeassistant.local/share/tesla/selfsigned.pem",
+  "proxy_addon_slug": "c03d64a7_tesla_http_proxy",
+  "public_key_url": "https://example.com/.well-known/appspecific/com.tesla.3p.public-key.pem",
+
+  "ssh_host": "root@homeassistant.local",
+  "ssh_key": "~/.ssh/id_ed25519",
+  "ssh_exe": "ssh",
+  "gpg_exe": "gpg",
+  "gpgconf_exe": "gpgconf",
+  "share_addons": "//homeassistant.local/addons",
+  "share_addon_configs": "//homeassistant.local/addon_configs",
+  "share_backup": "//homeassistant.local/backup",
+  "temp_proxy_port": 4446,
+  "charging_check_entities": []
+}

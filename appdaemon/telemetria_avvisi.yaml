@@ -1,0 +1,10 @@
+# Telemetria Tesla: avvisi dello schermo dell'auto tradotti (esempio per apps.yaml di AppDaemon).
+# Il dizionario telemetria_avvisi_model3.json va accanto a telemetria_avvisi.py.
+telemetria_avvisi:
+  module: telemetria_avvisi
+  class: TelemetriaAvvisi
+  prefisso: tesla_tele_
+  nome: Tesla Telemetria
+  telegram: false
+  # entita' che, accese, vogliono dire "carica fermata apposta" (per esempio un relè che stacca la wallbox)
+  entita_pausa_carica: []

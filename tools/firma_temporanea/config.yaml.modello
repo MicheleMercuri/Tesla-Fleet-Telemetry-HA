@@ -1,0 +1,17 @@
+name: "Firma telemetria (temporaneo)"
+version: "0.4.1-1"
+slug: "firma_telemetria"
+description: "Proxy ufficiale Tesla vehicle-command 0.4.1, solo per firmare la configurazione della telemetria. firma_una_volta.py lo installa e lo toglie subito dopo."
+url: "https://github.com/teslamotors/vehicle-command"
+arch:
+  - amd64
+startup: application
+boot: manual
+# solo in casa: il router non apre questa porta (firma_una_volta.py mette quella di temp_proxy_port)
+ports:
+  4443/tcp: 4446
+map:
+  - type: addon_config
+    read_only: true
+options: {}
+schema: {}
