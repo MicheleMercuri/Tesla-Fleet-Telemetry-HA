@@ -1,5 +1,6 @@
 """Stile della vista: titolo con riga animata, tessere, titoli di sezione e righe con sfondo scuro (richiede card-mod).
-Solo calcoli, niente rete. I colori di base dei CSS (rosso) si sostituiscono con quelli della PALETTE."""
+CSS originali di questo progetto (MIT). Solo calcoli, niente rete. I colori di base dei CSS (rosso) si sostituiscono con
+quelli della PALETTE."""
 import copy
 
 PALETTE = {

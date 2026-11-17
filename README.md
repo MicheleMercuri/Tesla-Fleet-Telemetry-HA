@@ -176,14 +176,6 @@ pasting it into a public issue.
   Fleet API setup this project builds on.
 - Alert texts: unofficial Italian translation of Tesla's `alert_dictionary.csv`.
 
-## In italiano
-
-Telemetria Tesla in casa per Home Assistant: l'add-on con il server ufficiale di Tesla, circa 85 sensori MQTT, una
-plancia pronta e gli avvisi dello schermo dell'auto tradotti in italiano. Prerequisiti: la Fleet API già funzionante
-(per esempio con l'add-on Tesla HTTP Proxy di llamafilm), una porta del router girata direttamente a Home Assistant
-(non dietro Nginx), un nome DNS e l'add-on Mosquitto. I passi sono quelli della sezione Installation; gli script
-stampano i messaggi in italiano. Progetto non ufficiale, non affiliato a Tesla, Inc.
-
 ## License
 
 MIT, see [LICENSE](LICENSE).
