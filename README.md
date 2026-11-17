@@ -10,11 +10,9 @@ Italian.
 > Not affiliated with, endorsed by or connected to Tesla, Inc. "Tesla" is a trademark of Tesla, Inc. and is used here
 > only to describe compatibility.
 
-![Dashboard on a PC (demo data)](docs/vista_pc.png)
+![Dashboard (demo data)](docs/vista_pc.png)
 
-<img src="docs/vista_telefono.png" alt="Dashboard on a phone (demo data)" width="300">
-
-*Screenshots made with demo data.*
+*Screenshot made with demo data.*
 
 ## What you get
 
