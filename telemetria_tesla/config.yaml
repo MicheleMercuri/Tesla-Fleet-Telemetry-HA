@@ -1,4 +1,4 @@
-name: "Telemetria Tesla (non ufficiale)"
+name: "Telemetria Tesla"
 version: "0.10.0-3"
 slug: "telemetria_tesla"
 description: "Beta. Server Tesla fleet-telemetry v0.10.0 (immagine ufficiale fissata per digest) con scoperta automatica delle entita' in Home Assistant (MQTT discovery) e avvisi. Riceve lo stream mTLS dei veicoli su 4443/tcp e pubblica su MQTT in telemetria_tesla/<VIN>/. Non ufficiale, non affiliato a Tesla, Inc."

@@ -1,4 +1,4 @@
-# Telemetria Tesla (non ufficiale)
+# Telemetria Tesla
 
 Server ufficiale [fleet-telemetry](https://github.com/teslamotors/fleet-telemetry) di Tesla (v0.10.0, immagine fissata
 per digest) in un add-on di Home Assistant. Riceve dai veicoli lo stream in TLS mutuo sulla porta 4443/tcp, pubblica i

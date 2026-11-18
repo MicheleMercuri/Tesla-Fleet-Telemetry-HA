@@ -1,4 +1,4 @@
-# Fleet Telemetry for Tesla vehicles in Home Assistant (unofficial)
+# Fleet Telemetry for Tesla vehicles in Home Assistant
 
 Self-hosted [Tesla Fleet Telemetry](https://github.com/teslamotors/fleet-telemetry) for Home Assistant: Tesla's official
 server in an add-on that also creates every entity by itself (MQTT discovery), computes derived values, measures the
@@ -113,7 +113,7 @@ pasting it into a public issue.
 
 1. **Certificates:** `python tools/crea_certificati.py crea`. Keys stay in `private_dir`.
 2. **Add-on:** add this repository in the add-on store (Settings, Add-ons, Add-on store, three dots, Repositories:
-   `https://github.com/MicheleMercuri/Tesla-Fleet-Telemetry-HA`) and install "Telemetria Tesla (non ufficiale)". Start it
+   `https://github.com/MicheleMercuri/Tesla-Fleet-Telemetry-HA`) and install "Telemetria Tesla". Start it
    once: it stops because the certificates are missing, and the Supervisor creates its folder in `addon_configs`
    (`<hash>_telemetria_tesla`). Copy `server.crt` and `server.key` there, start it again and turn on the watchdog.
 3. **Router:** forward TCP 4443 to the Home Assistant host, port 4443.
