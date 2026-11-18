@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.10.0-4 (beta)
+
+- "At home" / "away from home" now comes first from the GPS position inside Home Assistant's home zone. The car's own
+  flag (`LocatedAtHome`) is used only when the position or the zone is not known: it can stay `true` for hours with the
+  car kilometres away, and then Sentry alerts away from home were recorded as "at home" and not notified.
+- A null or 0,0 position from the car no longer hides the last valid one.
+- Charging losses with a wallbox meter: the session counts as "at home" if the car was at home at the start or at the
+  end (the position arrives every 60 s, so plugging in right after arriving could still see the old position).
+- Dashboard: the position row uses the GPS zone first, then the car's flag. The legacy YAML package rule does the same.
+
 ## 0.10.0-3 (beta)
 
 - Entities created by the add-on itself (MQTT discovery): no YAML package and no AppDaemon app to install.

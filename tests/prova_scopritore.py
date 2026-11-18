@@ -149,6 +149,14 @@ with tempfile.TemporaryDirectory() as tmp:
     esito("a casa dal GPS dentro la zona home anche con LocatedAtHome falso", s.a_casa())
     v(s, "Location", {"latitude": ALTROVE[0], "longitude": ALTROVE[1]}, True)
     esito("fuori casa dal GPS", not s.a_casa())
+    v(s, "LocatedAtHome", True, True)
+    esito("fuori casa dal GPS anche con LocatedAtHome rimasto vero", not s.a_casa() and s.dove() == "fuori casa")
+    v(s, "Location", None, True)
+    esito("Location nulla: resta l'ultima posizione valida (fuori casa), non il flag", not s.a_casa())
+    v(s, "Location", {"latitude": 0, "longitude": 0}, True)
+    esito("Location 0,0: resta l'ultima posizione valida", not s.a_casa() and s.link_posizione() is not None)
+    v(s, "Location", {"latitude": ALTROVE[0], "longitude": ALTROVE[1]}, True)
+    v(s, "LocatedAtHome", False, True)
 
     # 4) marcia: parcheggio azzera il conteggio; il valore conservato uguale non conta
     v(s, "Gear", "ShiftStateD")

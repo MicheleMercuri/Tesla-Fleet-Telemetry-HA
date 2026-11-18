@@ -38,7 +38,7 @@ import tabelle
 from ha_api import HA, NonRisponde, dettaglio
 
 QUI = Path(__file__).resolve().parent
-VERSIONE = "0.3.0"
+VERSIONE = "0.3.1"
 VIN_RE = re.compile(r"^[A-HJ-NPR-Z0-9]{17}$")
 PORTE = {"DriverFront": "Guida", "DriverRear": "Post. guida", "PassengerFront": "Passeggero", "PassengerRear": "Post. passeggero",
          "TrunkFront": "Frunk", "TrunkRear": "Bagagliaio"}
@@ -195,6 +195,7 @@ class Scopritore:
         self.fin_completi = False  # i finestrini si pubblicano dalla prima volta che sono noti tutti e 4
         self.in_attesa = {}        # avvisi di ricarica in attesa dei 2 minuti: nome -> dati
         self.casa = None           # (lat, lon, raggio in m) dalla zona home di HA
+        self.ultima_posizione = None  # ultima Location valida: un valore nullo o 0,0 non la cancella
         self.casa_prossima = 0.0   # prossima lettura della zona home (ogni ora; dopo un minuto se HA non rispondeva)
         self.riprova = {}          # controllo giornaliero -> ora del prossimo tentativo (HA non rispondeva)
         self.da_salvare = False
@@ -490,21 +491,28 @@ class Scopritore:
         self.pubblica_derivato("navigazione", {"minuti": self.ultimi.get("MinutesToArrival"),
                                                "km_da_casa": self.km_da_casa(self.ultimi.get("DestinationLocation"))})
 
-    def a_casa(self):
-        """A casa per l'auto (LocatedAtHome) o per la posizione GPS dentro la zona home di HA."""
-        v = self.ultimi.get("LocatedAtHome")
-        if v is True or str(v).lower() == "true":
-            return True
+    def posizione(self):
+        """Ultima posizione valida: un Location nullo (dato Invalid dell'auto) o 0,0 non cancella quella di prima."""
         c = coordinate(self.ultimi.get("Location"))
+        if c is not None:
+            self.ultima_posizione = c
+        return self.ultima_posizione
+
+    def a_casa(self):
+        """Prima la posizione GPS dentro la zona home di HA; solo se mancano la posizione o la zona, "A casa" dell'auto
+        (LocatedAtHome). LocatedAtHome puo' restare true con l'auto lontana (visto con l'auto a 4 km da casa per ore):
+        se venisse prima, un'allerta fuori casa risulterebbe a casa e non verrebbe notificata."""
+        c = self.posizione()
         if c is not None and self.casa is not None:
             return km_tra(c[0], c[1], self.casa[0], self.casa[1]) * 1000 <= max(self.casa[2], 50)
-        return False
+        v = self.ultimi.get("LocatedAtHome")
+        return v is True or str(v).lower() == "true"
 
     def dove(self):
         return "a casa" if self.a_casa() else "fuori casa"
 
     def link_posizione(self):
-        c = coordinate(self.ultimi.get("Location"))
+        c = self.posizione()
         return f"https://www.google.com/maps?q={c[0]:.5f},{c[1]:.5f}" if c else None
 
     # ------------------------------------------------------------------ Sentinella e parcheggio
@@ -644,7 +652,10 @@ class Scopritore:
         self.salva()
         fine = {"energia": numero(self.ultimi.get("LifetimeEnergyChargedKwh")), "batteria": numero(self.ultimi.get("BatteryLevel")),
                 "usata": numero(self.ultimi.get("LifetimeEnergyUsed")), "ora": datetime.fromtimestamp(self.ora(), timezone.utc).isoformat(timespec="seconds")}
-        if self.contatore_wallbox and sess.get("wallbox") is not None and sess.get("a_casa"):
+        # a casa all'inizio o alla fine: la posizione arriva ogni 60 s, col cavo attaccato subito dopo l'arrivo l'inizio
+        # puo' avere ancora la posizione di prima della zona home
+        sess["a_casa"] = bool(sess.get("a_casa") or self.a_casa())
+        if self.contatore_wallbox and sess.get("wallbox") is not None and sess["a_casa"]:
             def leggi(ha):
                 w = kwh(ha.stato(self.contatore_wallbox))
                 with self.blocco:

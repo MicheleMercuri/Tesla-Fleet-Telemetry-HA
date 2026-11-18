@@ -234,7 +234,10 @@ def template(P, nome):
              "porta_post_passeggero": "Post. passeggero", "frunk": "Frunk", "bagagliaio": "Bagagliaio"}
     fin = {"finestrino_guida": "Guida", "finestrino_passeggero": "Passeggero", "finestrino_post_guida": "Post. guida",
            "finestrino_post_passeggero": "Post. passeggero"}
-    a_casa = f"is_state('binary_sensor.{P}a_casa', 'on') or is_state('device_tracker.{P}posizione', 'home')"
+    # prima il GPS (zona home di HA), poi LocatedAtHome: il flag dell'auto puo' restare true con l'auto lontana
+    a_casa = (f"(is_state('device_tracker.{P}posizione', 'home') if (has_value('device_tracker.{P}posizione') and "
+              f"(state_attr('device_tracker.{P}posizione', 'latitude') | float(0)) != 0) else "
+              f"is_state('binary_sensor.{P}a_casa', 'on'))")
 
     def elenco(mappa, tutte):
         m = json.dumps(mappa, ensure_ascii=False)

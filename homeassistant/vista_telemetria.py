@@ -146,8 +146,11 @@ def costruisci(px, mappa=True, avvisi=True, con_css=True, titolo="Telemetria Tes
     viaggio = [
         st.titolo("POSIZIONE E VIAGGIO", "🧭", "ciano"),
         riga("device_tracker." + px + "posizione",
-             "{{ 'A casa' if is_state('" + B + "a_casa', 'on') else 'Al lavoro' if is_state('" + B + "al_lavoro', 'on') else "
-             "'Fuori casa' if is_state('" + B + "a_casa', 'off') else 'Posizione: -' }}"
+             # prima il GPS (zona di HA), poi "A casa" dell'auto: il flag dell'auto puo' restare acceso con l'auto lontana
+             "{% set t = 'device_tracker." + px + "posizione' %}{% set s = states(t) %}"
+             "{{ ('A casa' if s == 'home' else 'Fuori casa' if s == 'not_home' else s) "
+             "if has_value(t) and (state_attr(t, 'latitude') | float(0)) != 0 else "
+             "'A casa' if is_state('" + B + "a_casa', 'on') else 'Fuori casa' if is_state('" + B + "a_casa', 'off') else 'Posizione: -' }}"
              # a vettura ferma senza conducente l'auto manda la marcia null: niente "marcia -"
              "{% set m = states('" + P + "marcia') %}{{ ' · marcia ' ~ m if m not in ['unknown', 'unavailable'] else '' }}",
              "Contachilometri " + val(P + "contachilometri", 0, " km"), "mdi:map-marker", "cyan"),
