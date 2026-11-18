@@ -11,9 +11,8 @@ tools/config.json
 *.tar.gz
 *.parziale
 *.log
-# file generati: contengono il VIN o dipendono dal proprio impianto
-homeassistant/*.yaml
-appdaemon/telemetria_avvisi.json
+# file generati dalle versioni di prova con il package YAML: contenevano il VIN
+homeassistant/telemetria_tesla.yaml
 # editor, Python e sistema
 .vscode/
 .idea/

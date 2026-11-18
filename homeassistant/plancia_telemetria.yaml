@@ -1,0 +1,993 @@
+title: Telemetria Tesla
+views:
+- title: Telemetria Tesla
+  path: telemetria-tesla
+  icon: mdi:car-connected
+  type: sections
+  max_columns: 3
+  dense_section_placement: true
+  sections:
+  - type: grid
+    column_span: 3
+    cards:
+    - type: vertical-stack
+      grid_options:
+        columns: full
+      cards:
+      - type: custom:mushroom-title-card
+        title: TELEMETRIA TESLA
+        subtitle: ''
+        card_mod:
+          style: "ha-card {\n  background: linear-gradient(135deg,\n    rgba(15, 15, 28, 0.97) 0%,\n    rgba(22, 30, 48, 0.95) 50%,\n    rgba(15, 22, 40, 0.97) 100%);\n  border: 1px solid rgba(33, 150, 243, 0.2);\n  border-radius: 24px;\n  padding: 18px 24px 14px 24px;\n  position: relative;\n  overflow: hidden;\n}\nha-card .header,\nha-card .container {\n  padding: 0 !important;\n  margin: 0 !important;\n}\nha-card .title {\n  margin: 0 !important;\n  padding: 0 !important;\n  font-size: 28px !important;\n  font-weight: 700 !important;\n  line-height: 1.1 !important;\n  display: inline-flex !important;\n  align-items: center !important;\n  gap: 10px !important;\n  width: max-content;\n  background: linear-gradient(90deg, #2196f3, #42a5f5, #2196f3);\n  background-size: 200% auto;\n  background-position: 0% center;\n  -webkit-background-clip: text;\n  -webkit-text-fill-color: transparent;\n  animation: shine 3s linear infinite;\n  pointer-events: none;\n}\nha-card .title::before {\n  content: \"\U0001F4E1\";\n  font-size: 26px;\n  line-height: 1;\n  -webkit-text-fill-color: #2196f3;\n  background: none !important;\n  filter: drop-shadow(0 0 5px rgba(33,150,243,0.55));\n}\nha-card .subtitle { display: none !important; }\nha-card::after {\n  content: \"\";\n  display: block;\n  width: 100%;\n  height: 4px;\n  margin-top: 12px;\n  border-radius: 999px;\n  background-image:\n    linear-gradient(90deg, rgba(33,150,243,0.20), rgba(66,165,245,0.20)),\n    linear-gradient(90deg,\n      transparent 0%,\n      rgba(33,150,243,0.00) 18%,\n      rgba(33,150,243,0.70) 40%,\n      rgba(66,165,245,0.85) 47%,\n      rgba(255,255,255,1.00) 50%,\n      rgba(66,165,245,0.85) 53%,\n      rgba(33,150,243,0.70) 60%,\n      rgba(33,150,243,0.00) 82%,\n      transparent 100%),\n    radial-gradient(circle,\n      rgba(255,255,255,1.00) 0%,\n      rgba(255,255,255,0.55) 35%,\n      rgba(33,150,243,0.22) 58%,\n      transparent 75%);\n  background-size: 100% 100%, 200% 100%, 18px 18px;\n  background-repeat: no-repeat;\n  background-position: 0% 0, 110% 0, -12px 50%;\n  animation: sweep-main 2.2s ease-in-out infinite alternate;\n  will-change: background-position, opacity;\n  box-shadow:\n    0 0 8px rgba(33,150,243,0.35),\n    0 0 16px rgba(66,165,245,0.22);\n  filter:\n    drop-shadow(0 0 6px rgba(255,255,255,0.18))\n    drop-shadow(0 0 10px rgba(33,150,243,0.14));\n  pointer-events: none;\n}\n@keyframes shine { to { background-position: 200% center; } }\n@keyframes sweep-main {\n  0%   { background-position: 0% 0, 110% 0, -12px 50%; opacity: 0.65; }\n  50%  { opacity: 1; }\n  100% { background-position: 0% 0, -10% 0, calc(100% + 12px) 50%; opacity: 0.65; }\n}\n"
+      - type: horizontal-stack
+        cards:
+        - type: custom:mushroom-template-card
+          entity: sensor.tesla_tele_sentinella
+          primary: '{% set s = states(''sensor.tesla_tele_sentinella'') %}{{ s if s not in [''unknown'', ''unavailable''] else ''-'' }}'
+          secondary: Sentinella
+          icon: '{% set s = states(''sensor.tesla_tele_sentinella'') %}{{ ''mdi:shield-alert'' if s == ''Allarme'' else ''mdi:shield-search'' if s == ''Allerta'' else ''mdi:shield-car'' }}'
+          color: '{% set s = states(''sensor.tesla_tele_sentinella'') %}{{ ''pink'' if s == ''Allarme'' else ''amber'' if s == ''Allerta'' else ''blue'' if s in [''Inserita'', ''A riposo'', ''Silenziosa''] else ''grey'' }}'
+          multiline_secondary: true
+          tap_action:
+            action: more-info
+          hold_action:
+            action: more-info
+          vertical: true
+          card_mod:
+            style: "ha-card {\n  --pulse-color: 33,150,243;\n  border: 1px solid rgba(33,150,243,0.35);\n  background: linear-gradient(145deg,\n    rgba(var(--pulse-color), 0.10) 0%,\n    rgba(var(--pulse-color), 0.02) 100%);\n  border-radius: 20px;\n  backdrop-filter: blur(12px);\n  --icon-size: 48px;\n  position: relative;\n  overflow: hidden;\n}\nmushroom-shape-icon {\n  filter: drop-shadow(0 0 8px rgba(33,150,243,0.6)) drop-shadow(0 0 20px rgba(33,150,243,0.3));\n}\n.primary {\n  font-size: 17px !important;\n  font-weight: 800 !important;\n  letter-spacing: 0.5px;\n  text-transform: uppercase;\n}\n.secondary {\n  font-size: 11px !important;\n  font-weight: 500 !important;\n  opacity: 0.85;\n}\nha-card::after {\n  content: \"\";\n  position: absolute;\n  bottom: 0; left: 0; right: 0;\n  height: 3px;\n  border-radius: 0 0 20px 20px;\n  background: linear-gradient(90deg,\n    transparent 0%, rgba(var(--pulse-color), 0.0) 15%,\n    rgba(var(--pulse-color), 0.8) 40%, rgba(var(--pulse-color), 1.0) 50%,\n    rgba(var(--pulse-color), 0.8) 60%, rgba(var(--pulse-color), 0.0) 85%,\n    transparent 100%);\n  background-size: 200% 100%;\n  animation: sweep-bar 2.5s ease-in-out infinite alternate;\n}\n@keyframes pulse-card {\n  0%, 100% { box-shadow: 0 0 10px rgba(var(--pulse-color), 0.15), 0 0 30px rgba(var(--pulse-color), 0.08); }\n  50% { box-shadow: 0 0 18px rgba(var(--pulse-color), 0.35), 0 0 45px rgba(var(--pulse-color), 0.15); }\n}\n@keyframes sweep-bar {\n  0%   { background-position: 120% 0; }\n  100% { background-position: -20% 0; }\n}\n"
+        - type: custom:mushroom-template-card
+          entity: sensor.tesla_tele_batteria
+          primary: '{% set s = states(''sensor.tesla_tele_batteria'') %}{{ (s | float | round(0)) | string | replace(''.'', '','') if is_number(s) else ''-'' }}%'
+          secondary: '{% set s = states(''sensor.tesla_tele_stato_carica'') %}{{ s if s not in [''unknown'', ''unavailable''] else ''-'' }}'
+          icon: mdi:battery-charging-60
+          color: cyan
+          multiline_secondary: true
+          tap_action:
+            action: more-info
+          hold_action:
+            action: more-info
+          vertical: true
+          card_mod:
+            style: "ha-card {\n  --pulse-color: 0,188,212;\n  border: 1px solid rgba(0,188,212,0.35);\n  background: linear-gradient(145deg,\n    rgba(var(--pulse-color), 0.10) 0%,\n    rgba(var(--pulse-color), 0.02) 100%);\n  border-radius: 20px;\n  backdrop-filter: blur(12px);\n  --icon-size: 48px;\n  position: relative;\n  overflow: hidden;\n}\nmushroom-shape-icon {\n  filter: drop-shadow(0 0 8px rgba(0,188,212,0.6)) drop-shadow(0 0 20px rgba(0,188,212,0.3));\n}\n.primary {\n  font-size: 17px !important;\n  font-weight: 800 !important;\n  letter-spacing: 0.5px;\n  text-transform: uppercase;\n}\n.secondary {\n  font-size: 11px !important;\n  font-weight: 500 !important;\n  opacity: 0.85;\n}\nha-card::after {\n  content: \"\";\n  position: absolute;\n  bottom: 0; left: 0; right: 0;\n  height: 3px;\n  border-radius: 0 0 20px 20px;\n  background: linear-gradient(90deg,\n    transparent 0%, rgba(var(--pulse-color), 0.0) 15%,\n    rgba(var(--pulse-color), 0.8) 40%, rgba(var(--pulse-color), 1.0) 50%,\n    rgba(var(--pulse-color), 0.8) 60%, rgba(var(--pulse-color), 0.0) 85%,\n    transparent 100%);\n  background-size: 200% 100%;\n  animation: sweep-bar 2.5s ease-in-out infinite alternate;\n}\n@keyframes pulse-card {\n  0%, 100% { box-shadow: 0 0 10px rgba(var(--pulse-color), 0.15), 0 0 30px rgba(var(--pulse-color), 0.08); }\n  50% { box-shadow: 0 0 18px rgba(var(--pulse-color), 0.35), 0 0 45px rgba(var(--pulse-color), 0.15); }\n}\n@keyframes sweep-bar {\n  0%   { background-position: 120% 0; }\n  100% { background-position: -20% 0; }\n}\n"
+        - type: custom:mushroom-template-card
+          entity: binary_sensor.tesla_tele_serratura
+          primary: '{% set s = states(''binary_sensor.tesla_tele_serratura'') %}{{ ''Chiusa'' if s == ''off'' else ''Aperta'' if s == ''on'' else ''-'' }}'
+          secondary: '{% set s = states(''sensor.tesla_tele_porte_aperte'') %}{{ s if s not in [''unknown'', ''unavailable''] else ''-'' }}'
+          icon: mdi:car-door-lock
+          color: '{{ ''amber'' if is_state(''binary_sensor.tesla_tele_serratura'', ''on'') or states(''sensor.tesla_tele_porte_aperte'') not in [''Tutte chiuse'', ''unknown'', ''unavailable''] else ''teal'' }}'
+          multiline_secondary: true
+          tap_action:
+            action: more-info
+          hold_action:
+            action: more-info
+          vertical: true
+          card_mod:
+            style: "ha-card {\n  --pulse-color: 38,166,154;\n  border: 1px solid rgba(38,166,154,0.35);\n  background: linear-gradient(145deg,\n    rgba(var(--pulse-color), 0.10) 0%,\n    rgba(var(--pulse-color), 0.02) 100%);\n  border-radius: 20px;\n  backdrop-filter: blur(12px);\n  --icon-size: 48px;\n  position: relative;\n  overflow: hidden;\n}\nmushroom-shape-icon {\n  filter: drop-shadow(0 0 8px rgba(38,166,154,0.6)) drop-shadow(0 0 20px rgba(38,166,154,0.3));\n}\n.primary {\n  font-size: 17px !important;\n  font-weight: 800 !important;\n  letter-spacing: 0.5px;\n  text-transform: uppercase;\n}\n.secondary {\n  font-size: 11px !important;\n  font-weight: 500 !important;\n  opacity: 0.85;\n}\nha-card::after {\n  content: \"\";\n  position: absolute;\n  bottom: 0; left: 0; right: 0;\n  height: 3px;\n  border-radius: 0 0 20px 20px;\n  background: linear-gradient(90deg,\n    transparent 0%, rgba(var(--pulse-color), 0.0) 15%,\n    rgba(var(--pulse-color), 0.8) 40%, rgba(var(--pulse-color), 1.0) 50%,\n    rgba(var(--pulse-color), 0.8) 60%, rgba(var(--pulse-color), 0.0) 85%,\n    transparent 100%);\n  background-size: 200% 100%;\n  animation: sweep-bar 2.5s ease-in-out infinite alternate;\n}\n@keyframes pulse-card {\n  0%, 100% { box-shadow: 0 0 10px rgba(var(--pulse-color), 0.15), 0 0 30px rgba(var(--pulse-color), 0.08); }\n  50% { box-shadow: 0 0 18px rgba(var(--pulse-color), 0.35), 0 0 45px rgba(var(--pulse-color), 0.15); }\n}\n@keyframes sweep-bar {\n  0%   { background-position: 120% 0; }\n  100% { background-position: -20% 0; }\n}\n"
+        - type: custom:mushroom-template-card
+          entity: binary_sensor.tesla_tele_collegata
+          primary: '{% set s = states(''binary_sensor.tesla_tele_collegata'') %}{{ ''Collegata'' if s == ''on'' else ''In attesa'' if s == ''off'' else ''Mai vista'' }}'
+          secondary: Ultimo collegamento {% set t = as_timestamp(states('sensor.tesla_tele_ultimo_collegamento'), 0) %}{{ t | timestamp_custom('%d/%m %H:%M') if t > 0 else '-' }}
+          icon: mdi:access-point-network
+          color: '{{ ''purple'' if is_state(''binary_sensor.tesla_tele_collegata'', ''on'') else ''grey'' }}'
+          multiline_secondary: true
+          tap_action:
+            action: more-info
+          hold_action:
+            action: more-info
+          vertical: true
+          card_mod:
+            style: "ha-card {\n  --pulse-color: 206,147,216;\n  border: 1px solid rgba(206,147,216,0.35);\n  background: linear-gradient(145deg,\n    rgba(var(--pulse-color), 0.10) 0%,\n    rgba(var(--pulse-color), 0.02) 100%);\n  border-radius: 20px;\n  backdrop-filter: blur(12px);\n  --icon-size: 48px;\n  position: relative;\n  overflow: hidden;\n}\nmushroom-shape-icon {\n  filter: drop-shadow(0 0 8px rgba(206,147,216,0.6)) drop-shadow(0 0 20px rgba(206,147,216,0.3));\n}\n.primary {\n  font-size: 17px !important;\n  font-weight: 800 !important;\n  letter-spacing: 0.5px;\n  text-transform: uppercase;\n}\n.secondary {\n  font-size: 11px !important;\n  font-weight: 500 !important;\n  opacity: 0.85;\n}\nha-card::after {\n  content: \"\";\n  position: absolute;\n  bottom: 0; left: 0; right: 0;\n  height: 3px;\n  border-radius: 0 0 20px 20px;\n  background: linear-gradient(90deg,\n    transparent 0%, rgba(var(--pulse-color), 0.0) 15%,\n    rgba(var(--pulse-color), 0.8) 40%, rgba(var(--pulse-color), 1.0) 50%,\n    rgba(var(--pulse-color), 0.8) 60%, rgba(var(--pulse-color), 0.0) 85%,\n    transparent 100%);\n  background-size: 200% 100%;\n  animation: sweep-bar 2.5s ease-in-out infinite alternate;\n}\n@keyframes pulse-card {\n  0%, 100% { box-shadow: 0 0 10px rgba(var(--pulse-color), 0.15), 0 0 30px rgba(var(--pulse-color), 0.08); }\n  50% { box-shadow: 0 0 18px rgba(var(--pulse-color), 0.35), 0 0 45px rgba(var(--pulse-color), 0.15); }\n}\n@keyframes sweep-bar {\n  0%   { background-position: 120% 0; }\n  100% { background-position: -20% 0; }\n}\n"
+  - type: grid
+    column_span: 1
+    cards:
+    - type: vertical-stack
+      grid_options:
+        columns: full
+      cards:
+      - type: custom:mushroom-title-card
+        title: SENTINELLA E SICUREZZA
+        subtitle: ''
+        card_mod:
+          style: "ha-card { padding: 12px 16px 8px 16px; }\n\nha-card .title {\n  margin: 0 !important;\n  font-size: 20px !important;\n  font-weight: 700 !important;\n  line-height: 1.1;\n  display: inline-flex;\n  align-items: center;\n  gap: 10px;\n  background: linear-gradient(90deg, #2196f3, #42a5f5, #2196f3);\n  background-size: 200% auto;\n  -webkit-background-clip: text;\n  -webkit-text-fill-color: transparent;\n  animation: shine 3s linear infinite;\n}\n\nha-card .title::before {\n  content: \"\U0001F6E1️\";\n  font-size: 20px;\n  line-height: 1;\n  -webkit-text-fill-color: #2196f3;\n  background: none !important;\n  filter: drop-shadow(0 0 8px rgba(33,150,243,0.75));\n}\n\nha-card .subtitle { display: none !important; }\n\nha-card::after {\n  content: \"\";\n  display: block;\n  width: 100%;\n  height: 4px;\n  margin-top: 10px;\n  border-radius: 999px;\n  background-image:\n    linear-gradient(90deg, rgba(33,150,243,0.30), rgba(66,165,245,0.30)),\n    linear-gradient(90deg,\n      transparent 0%,\n      rgba(33,150,243,0.00) 10%,\n      rgba(33,150,243,0.85) 28%,\n      rgba(66,165,245,0.95) 45%,\n      rgba(255,255,255,1.00) 50%,\n      rgba(66,165,245,0.95) 55%,\n      rgba(33,150,243,0.85) 72%,\n      rgba(33,150,243,0.00) 90%,\n      transparent 100%),\n    radial-gradient(circle,\n      rgba(255,255,255,1.00) 0%,\n      rgba(255,255,255,0.80) 30%,\n      rgba(33,150,243,0.50) 55%,\n      transparent 72%);\n  background-size: 100% 100%, 240% 100%, 24px 24px;\n  background-repeat: no-repeat;\n  background-position: 0% 0, 120% 0, -14px 50%;\n  animation: sweep-sec 2.7s ease-in-out infinite alternate;\n  will-change: background-position, opacity;\n  box-shadow:\n    0 0 14px rgba(33,150,243,0.70),\n    0 0 28px rgba(66,165,245,0.45),\n    0 0 4px rgba(255,255,255,0.30);\n  filter:\n    drop-shadow(0 0 8px rgba(255,255,255,0.25))\n    drop-shadow(0 0 14px rgba(33,150,243,0.30));\n  pointer-events: none;\n}\n\n@keyframes shine { to { background-position: 200% center; } }\n\n@keyframes sweep-sec {\n  0%   { background-position: 0% 0, 120% 0, -14px 50%; opacity: 0.70; }\n  50%  { opacity: 1; }\n  100% { background-position: 0% 0, -20% 0, calc(100% + 14px) 50%; opacity: 0.70; }\n}\n"
+      - type: custom:mushroom-template-card
+        entity: sensor.tesla_tele_sentinella
+        primary: 'Sentinella: {% set s = states(''sensor.tesla_tele_sentinella'') %}{{ s if s not in [''unknown'', ''unavailable''] else ''-'' }}'
+        secondary: Ultimo allarme {% set t = as_timestamp(states('sensor.tesla_tele_ultimo_allarme'), 0) %}{{ t | timestamp_custom('%d/%m %H:%M') if t > 0 else 'mai' }} · ultima allerta {% set t = as_timestamp(states('sensor.tesla_tele_ultima_allerta'), 0) %}{{ t | timestamp_custom('%d/%m %H:%M') if t > 0 else 'mai' }}
+        icon: '{% set s = states(''sensor.tesla_tele_sentinella'') %}{{ ''mdi:shield-alert'' if s == ''Allarme'' else ''mdi:shield-search'' if s == ''Allerta'' else ''mdi:shield-car'' }}'
+        color: '{% set s = states(''sensor.tesla_tele_sentinella'') %}{{ ''pink'' if s == ''Allarme'' else ''amber'' if s == ''Allerta'' else ''blue'' if s in [''Inserita'', ''A riposo'', ''Silenziosa''] else ''grey'' }}'
+        multiline_secondary: true
+        tap_action:
+          action: more-info
+        hold_action:
+          action: more-info
+        card_mod:
+          style: "ha-card {\n  background: rgba(30,30,40,0.6);\n  border: 1px solid rgba(100,100,100,0.3);\n  border-radius: 16px;\n  backdrop-filter: blur(10px);\n}\n"
+      - type: custom:mushroom-template-card
+        entity: binary_sensor.tesla_tele_serratura
+        primary: '{% set s = states(''binary_sensor.tesla_tele_serratura'') %}{{ ''Bloccata'' if s == ''off'' else ''Sbloccata'' if s == ''on'' else ''Serratura: -'' }}'
+        secondary: Chiavi abbinate {% set s = states('sensor.tesla_tele_chiavi') %}{{ s if s not in ['unknown', 'unavailable'] else '-' }} · conducente seduto {% set s = states('binary_sensor.tesla_tele_conducente') %}{{ 'sì' if s == 'on' else 'no' if s == 'off' else '-' }}
+        icon: mdi:lock
+        color: '{{ ''amber'' if is_state(''binary_sensor.tesla_tele_serratura'', ''on'') else ''blue'' }}'
+        multiline_secondary: true
+        tap_action:
+          action: more-info
+        hold_action:
+          action: more-info
+        card_mod:
+          style: "ha-card {\n  background: rgba(30,30,40,0.6);\n  border: 1px solid rgba(100,100,100,0.3);\n  border-radius: 16px;\n  backdrop-filter: blur(10px);\n}\n"
+      - type: custom:mushroom-template-card
+        entity: sensor.tesla_tele_porte_aperte
+        primary: 'Porte: {% set s = states(''sensor.tesla_tele_porte_aperte'') %}{{ s if s not in [''unknown'', ''unavailable''] else ''-'' }}'
+        secondary: 'Finestrini: {% set s = states(''sensor.tesla_tele_finestrini_aperti'') %}{{ s if s not in [''unknown'', ''unavailable''] else ''-'' }}'
+        icon: mdi:car-door
+        color: '{{ ''amber'' if states(''sensor.tesla_tele_porte_aperte'') not in [''Tutte chiuse'', ''unknown'', ''unavailable''] else ''teal'' }}'
+        multiline_secondary: true
+        tap_action:
+          action: more-info
+        hold_action:
+          action: more-info
+        card_mod:
+          style: "ha-card {\n  background: rgba(30,30,40,0.6);\n  border: 1px solid rgba(100,100,100,0.3);\n  border-radius: 16px;\n  backdrop-filter: blur(10px);\n}\n"
+      - type: custom:mushroom-template-card
+        entity: sensor.tesla_tele_sentinella_parcheggio
+        primary: '{% set s = states(''sensor.tesla_tele_sentinella_parcheggio'') %}{% set n = s | int(0) %}{% set l = state_attr(''sensor.tesla_tele_sentinella_parcheggio'', ''allerte'') | int(0) %}Dal parcheggio: {{ (n ~ ('' allarme'' if n == 1 else '' allarmi'')) if is_number(s) else ''-'' }}, {{ l }} {{ ''allerta'' if l == 1 else ''allerte'' }}'
+        secondary: '{% set t = state_attr(''sensor.tesla_tele_sentinella_parcheggio'', ''parcheggiata_dalle'') %}{{ (''Parcheggiata alle '' ~ (as_timestamp(t) | timestamp_custom(''%H:%M del %d/%m'')) ~ '', '' ~ (state_attr(''sensor.tesla_tele_sentinella_parcheggio'', ''dove'') or '''')) if t else ''Il conteggio riparte a ogni parcheggio (marcia in P)'' }}'
+        icon: mdi:shield-car
+        color: '{{ ''orange'' if states(''sensor.tesla_tele_sentinella_parcheggio'') | int(0) > 0 else ''blue'' }}'
+        multiline_secondary: true
+        tap_action:
+          action: more-info
+        hold_action:
+          action: more-info
+        card_mod:
+          style: "ha-card {\n  background: rgba(30,30,40,0.6);\n  border: 1px solid rgba(100,100,100,0.3);\n  border-radius: 16px;\n  backdrop-filter: blur(10px);\n}\n"
+      - type: custom:mushroom-template-card
+        entity: binary_sensor.tesla_tele_quattro_frecce
+        primary: Quattro frecce {% set s = states('binary_sensor.tesla_tele_quattro_frecce') %}{{ 'accese' if s == 'on' else 'spente' if s == 'off' else '-' }}
+        secondary: 'Schermo: {% set s = states(''sensor.tesla_tele_schermo'') %}{{ s if s not in [''unknown'', ''unavailable''] else ''-'' }}'
+        icon: mdi:car-light-alert
+        color: '{{ ''orange'' if is_state(''binary_sensor.tesla_tele_quattro_frecce'', ''on'') else ''grey'' }}'
+        multiline_secondary: true
+        tap_action:
+          action: more-info
+        hold_action:
+          action: more-info
+        card_mod:
+          style: "ha-card {\n  background: rgba(30,30,40,0.6);\n  border: 1px solid rgba(100,100,100,0.3);\n  border-radius: 16px;\n  backdrop-filter: blur(10px);\n}\n"
+    - type: vertical-stack
+      grid_options:
+        columns: full
+      cards:
+      - type: custom:mushroom-title-card
+        title: POSIZIONE E VIAGGIO
+        subtitle: ''
+        card_mod:
+          style: "ha-card { padding: 12px 16px 8px 16px; }\n\nha-card .title {\n  margin: 0 !important;\n  font-size: 20px !important;\n  font-weight: 700 !important;\n  line-height: 1.1;\n  display: inline-flex;\n  align-items: center;\n  gap: 10px;\n  background: linear-gradient(90deg, #00bcd4, #26c6da, #00bcd4);\n  background-size: 200% auto;\n  -webkit-background-clip: text;\n  -webkit-text-fill-color: transparent;\n  animation: shine 3s linear infinite;\n}\n\nha-card .title::before {\n  content: \"\U0001F9ED\";\n  font-size: 20px;\n  line-height: 1;\n  -webkit-text-fill-color: #00bcd4;\n  background: none !important;\n  filter: drop-shadow(0 0 8px rgba(0,188,212,0.75));\n}\n\nha-card .subtitle { display: none !important; }\n\nha-card::after {\n  content: \"\";\n  display: block;\n  width: 100%;\n  height: 4px;\n  margin-top: 10px;\n  border-radius: 999px;\n  background-image:\n    linear-gradient(90deg, rgba(0,188,212,0.30), rgba(38,198,218,0.30)),\n    linear-gradient(90deg,\n      transparent 0%,\n      rgba(0,188,212,0.00) 10%,\n      rgba(0,188,212,0.85) 28%,\n      rgba(38,198,218,0.95) 45%,\n      rgba(255,255,255,1.00) 50%,\n      rgba(38,198,218,0.95) 55%,\n      rgba(0,188,212,0.85) 72%,\n      rgba(0,188,212,0.00) 90%,\n      transparent 100%),\n    radial-gradient(circle,\n      rgba(255,255,255,1.00) 0%,\n      rgba(255,255,255,0.80) 30%,\n      rgba(0,188,212,0.50) 55%,\n      transparent 72%);\n  background-size: 100% 100%, 240% 100%, 24px 24px;\n  background-repeat: no-repeat;\n  background-position: 0% 0, 120% 0, -14px 50%;\n  animation: sweep-sec 2.7s ease-in-out infinite alternate;\n  will-change: background-position, opacity;\n  box-shadow:\n    0 0 14px rgba(0,188,212,0.70),\n    0 0 28px rgba(38,198,218,0.45),\n    0 0 4px rgba(255,255,255,0.30);\n  filter:\n    drop-shadow(0 0 8px rgba(255,255,255,0.25))\n    drop-shadow(0 0 14px rgba(0,188,212,0.30));\n  pointer-events: none;\n}\n\n@keyframes shine { to { background-position: 200% center; } }\n\n@keyframes sweep-sec {\n  0%   { background-position: 0% 0, 120% 0, -14px 50%; opacity: 0.70; }\n  50%  { opacity: 1; }\n  100% { background-position: 0% 0, -20% 0, calc(100% + 14px) 50%; opacity: 0.70; }\n}\n"
+      - type: custom:mushroom-template-card
+        entity: device_tracker.tesla_tele_posizione
+        primary: '{{ ''A casa'' if is_state(''binary_sensor.tesla_tele_a_casa'', ''on'') else ''Al lavoro'' if is_state(''binary_sensor.tesla_tele_al_lavoro'', ''on'') else ''Fuori casa'' if is_state(''binary_sensor.tesla_tele_a_casa'', ''off'') else ''Posizione: -'' }}{% set m = states(''sensor.tesla_tele_marcia'') %}{{ '' · marcia '' ~ m if m not in [''unknown'', ''unavailable''] else '''' }}'
+        secondary: Contachilometri {% set s = states('sensor.tesla_tele_contachilometri') %}{{ (s | float | round(0)) | string | replace('.', ',') if is_number(s) else '-' }} km
+        icon: mdi:map-marker
+        color: cyan
+        multiline_secondary: true
+        tap_action:
+          action: more-info
+        hold_action:
+          action: more-info
+        card_mod:
+          style: "ha-card {\n  background: rgba(30,30,40,0.6);\n  border: 1px solid rgba(100,100,100,0.3);\n  border-radius: 16px;\n  backdrop-filter: blur(10px);\n}\n"
+      - type: custom:mushroom-template-card
+        entity: sensor.tesla_tele_destinazione
+        primary: '{% set d = states(''sensor.tesla_tele_destinazione'') %}{% set m = states(''sensor.tesla_tele_minuti_arrivo'') %}{% if d not in [''Nessuna'', ''unknown'', ''unavailable''] %}Destinazione: {{ d }}{% elif is_number(m) %}Navigazione in corso{% else %}Destinazione: Nessuna{% endif %}'
+        secondary: '{% set d = states(''sensor.tesla_tele_destinazione'') %}{% set m = states(''sensor.tesla_tele_minuti_arrivo'') %}{% if not is_number(m) %}{{ ''Nessuna navigazione in corso'' if d in [''Nessuna'', ''unknown'', ''unavailable''] else ''Percorso in calcolo'' }}{% else %}{% set k = states(''sensor.tesla_tele_km_arrivo'') %}{% set b = states(''sensor.tesla_tele_batteria_arrivo'') %}{% set r = states(''sensor.tesla_tele_ritardo_traffico'') %}{% set c = states(''sensor.tesla_tele_destinazione_distanza'') %}{% set mi = m | float | round(0) | int %}{% set durata = (mi // 60) ~ '' h '' ~ (''%02d'' % (mi % 60)) ~ '' min'' if mi >= 60 else mi ~ '' min'' %}{% set e = states.sensor.tesla_tele_minuti_arrivo %}{% if is_state(''binary_sensor.tesla_tele_collegata'', ''on'') %}{% set t = as_timestamp(now()) + mi * 60 %}{% set q = ''arrivo alle '' ~ (t | timestamp_custom(''%H:%M'')) ~ ('' di domani'' if (t | timestamp_custom(''%Y%m%d'')) != now().strftime(''%Y%m%d'') else '''') %}{% else %}{% set q = ''ultimo dato alle '' ~ (as_timestamp(e.last_changed) | timestamp_custom(''%H:%M'')) if e is not none else ''auto non collegata'' %}{% endif %}{% set p = [durata ~ '', '' ~ q] %}{% if is_number(k) %}{% set p = p + [''mancano '' ~ ((k | float) | round(1) | string).replace(''.'', '','') ~ '' km''] %}{% endif %}{% set p = p + [''batteria all\''arrivo '' ~ (((b | float) | round(0) | int) ~ ''%'' if is_number(b) else ''in calcolo'')] %}{% if is_number(r) and r | float >= 1 %}{% set p = p + [''+'' ~ (r | float | round(0) | int) ~ '' min di traffico''] %}{% endif %}{% if is_number(c) and c | float >= 0.3 %}{% set p = p + [''destinazione a '' ~ ((c | float) | round(1) | string).replace(''.'', '','') ~ '' km da casa''] %}{% endif %}{{ p | join('' · '') }}{% endif %}'
+        icon: mdi:map-marker-path
+        color: '{{ ''blue'' if is_state(''binary_sensor.tesla_tele_verso_casa'', ''on'') else ''cyan'' }}'
+        multiline_secondary: true
+        tap_action:
+          action: more-info
+        hold_action:
+          action: more-info
+        card_mod:
+          style: "ha-card {\n  background: rgba(30,30,40,0.6);\n  border: 1px solid rgba(100,100,100,0.3);\n  border-radius: 16px;\n  backdrop-filter: blur(10px);\n}\n"
+      - type: map
+        entities:
+        - entity: device_tracker.tesla_tele_posizione
+        default_zoom: 15
+        hours_to_show: 0
+        theme_mode: dark
+        aspect_ratio: '16:9'
+        card_mod:
+          style: "ha-card {\n  background: rgba(30,30,40,0.6);\n  border: 1px solid rgba(100,100,100,0.3);\n  border-radius: 16px;\n  backdrop-filter: blur(10px);\n}\n"
+    - type: vertical-stack
+      grid_options:
+        columns: full
+      cards:
+      - type: custom:mushroom-title-card
+        title: ENERGIA AL GIORNO, 30 GIORNI
+        subtitle: ''
+        card_mod:
+          style: "ha-card { padding: 12px 16px 8px 16px; }\n\nha-card .title {\n  margin: 0 !important;\n  font-size: 20px !important;\n  font-weight: 700 !important;\n  line-height: 1.1;\n  display: inline-flex;\n  align-items: center;\n  gap: 10px;\n  background: linear-gradient(90deg, #ffb300, #ffca28, #ffb300);\n  background-size: 200% auto;\n  -webkit-background-clip: text;\n  -webkit-text-fill-color: transparent;\n  animation: shine 3s linear infinite;\n}\n\nha-card .title::before {\n  content: \"\U0001F4CA\";\n  font-size: 20px;\n  line-height: 1;\n  -webkit-text-fill-color: #ffb300;\n  background: none !important;\n  filter: drop-shadow(0 0 8px rgba(255,179,0,0.75));\n}\n\nha-card .subtitle { display: none !important; }\n\nha-card::after {\n  content: \"\";\n  display: block;\n  width: 100%;\n  height: 4px;\n  margin-top: 10px;\n  border-radius: 999px;\n  background-image:\n    linear-gradient(90deg, rgba(255,179,0,0.30), rgba(255,202,40,0.30)),\n    linear-gradient(90deg,\n      transparent 0%,\n      rgba(255,179,0,0.00) 10%,\n      rgba(255,179,0,0.85) 28%,\n      rgba(255,202,40,0.95) 45%,\n      rgba(255,255,255,1.00) 50%,\n      rgba(255,202,40,0.95) 55%,\n      rgba(255,179,0,0.85) 72%,\n      rgba(255,179,0,0.00) 90%,\n      transparent 100%),\n    radial-gradient(circle,\n      rgba(255,255,255,1.00) 0%,\n      rgba(255,255,255,0.80) 30%,\n      rgba(255,179,0,0.50) 55%,\n      transparent 72%);\n  background-size: 100% 100%, 240% 100%, 24px 24px;\n  background-repeat: no-repeat;\n  background-position: 0% 0, 120% 0, -14px 50%;\n  animation: sweep-sec 2.7s ease-in-out infinite alternate;\n  will-change: background-position, opacity;\n  box-shadow:\n    0 0 14px rgba(255,179,0,0.70),\n    0 0 28px rgba(255,202,40,0.45),\n    0 0 4px rgba(255,255,255,0.30);\n  filter:\n    drop-shadow(0 0 8px rgba(255,255,255,0.25))\n    drop-shadow(0 0 14px rgba(255,179,0,0.30));\n  pointer-events: none;\n}\n\n@keyframes shine { to { background-position: 200% center; } }\n\n@keyframes sweep-sec {\n  0%   { background-position: 0% 0, 120% 0, -14px 50%; opacity: 0.70; }\n  50%  { opacity: 1; }\n  100% { background-position: 0% 0, -20% 0, calc(100% + 14px) 50%; opacity: 0.70; }\n}\n"
+      - type: custom:apexcharts-card
+        graph_span: 30d
+        apex_config:
+          chart:
+            height: 210
+            foreColor: '#c9cdd6'
+            fontFamily: inherit
+            toolbar:
+              show: false
+            zoom:
+              enabled: false
+            background: transparent
+          grid:
+            borderColor: rgba(255,255,255,0.07)
+            strokeDashArray: 0
+            xaxis:
+              lines:
+                show: false
+            padding:
+              left: 4
+              right: 8
+              top: -8
+          legend:
+            show: true
+            position: top
+            horizontalAlign: left
+            fontSize: 12px
+            markers:
+              width: 10
+              height: 10
+              radius: 10
+            itemMargin:
+              horizontal: 8
+          dataLabels:
+            enabled: false
+          tooltip:
+            theme: dark
+          xaxis:
+            axisBorder:
+              show: false
+            axisTicks:
+              show: false
+          plotOptions:
+            bar:
+              borderRadius: 5
+              borderRadiusApplication: end
+              columnWidth: 60%
+          fill:
+            type:
+            - gradient
+            - gradient
+            - gradient
+            gradient:
+              shade: dark
+              type: vertical
+              opacityFrom: 0.95
+              opacityTo: 0.55
+              stops:
+              - 0
+              - 100
+        series:
+        - entity: sensor.tesla_tele_energia_caricata
+          name: Caricata
+          type: column
+          color: '#0072B2'
+          statistics:
+            type: change
+            period: day
+            align: middle
+          show:
+            legend_value: false
+        - entity: sensor.tesla_tele_energia_caricata_dc
+          name: di cui DC
+          type: column
+          color: '#E69F00'
+          statistics:
+            type: change
+            period: day
+            align: middle
+          show:
+            legend_value: false
+        - entity: sensor.tesla_tele_energia_usata
+          name: Usata
+          type: column
+          color: '#56B4E9'
+          statistics:
+            type: change
+            period: day
+            align: middle
+          show:
+            legend_value: false
+        header:
+          show: false
+        span:
+          end: day
+        card_mod:
+          style: "ha-card {\n  background: rgba(30,30,40,0.6);\n  border: 1px solid rgba(100,100,100,0.3);\n  border-radius: 16px;\n  backdrop-filter: blur(10px);\n}\n"
+    - type: vertical-stack
+      grid_options:
+        columns: full
+      cards:
+      - type: custom:mushroom-title-card
+        title: AVVISI E SOFTWARE
+        subtitle: ''
+        card_mod:
+          style: "ha-card { padding: 12px 16px 8px 16px; }\n\nha-card .title {\n  margin: 0 !important;\n  font-size: 20px !important;\n  font-weight: 700 !important;\n  line-height: 1.1;\n  display: inline-flex;\n  align-items: center;\n  gap: 10px;\n  background: linear-gradient(90deg, #2196f3, #42a5f5, #2196f3);\n  background-size: 200% auto;\n  -webkit-background-clip: text;\n  -webkit-text-fill-color: transparent;\n  animation: shine 3s linear infinite;\n}\n\nha-card .title::before {\n  content: \"\U0001F514\";\n  font-size: 20px;\n  line-height: 1;\n  -webkit-text-fill-color: #2196f3;\n  background: none !important;\n  filter: drop-shadow(0 0 8px rgba(33,150,243,0.75));\n}\n\nha-card .subtitle { display: none !important; }\n\nha-card::after {\n  content: \"\";\n  display: block;\n  width: 100%;\n  height: 4px;\n  margin-top: 10px;\n  border-radius: 999px;\n  background-image:\n    linear-gradient(90deg, rgba(33,150,243,0.30), rgba(66,165,245,0.30)),\n    linear-gradient(90deg,\n      transparent 0%,\n      rgba(33,150,243,0.00) 10%,\n      rgba(33,150,243,0.85) 28%,\n      rgba(66,165,245,0.95) 45%,\n      rgba(255,255,255,1.00) 50%,\n      rgba(66,165,245,0.95) 55%,\n      rgba(33,150,243,0.85) 72%,\n      rgba(33,150,243,0.00) 90%,\n      transparent 100%),\n    radial-gradient(circle,\n      rgba(255,255,255,1.00) 0%,\n      rgba(255,255,255,0.80) 30%,\n      rgba(33,150,243,0.50) 55%,\n      transparent 72%);\n  background-size: 100% 100%, 240% 100%, 24px 24px;\n  background-repeat: no-repeat;\n  background-position: 0% 0, 120% 0, -14px 50%;\n  animation: sweep-sec 2.7s ease-in-out infinite alternate;\n  will-change: background-position, opacity;\n  box-shadow:\n    0 0 14px rgba(33,150,243,0.70),\n    0 0 28px rgba(66,165,245,0.45),\n    0 0 4px rgba(255,255,255,0.30);\n  filter:\n    drop-shadow(0 0 8px rgba(255,255,255,0.25))\n    drop-shadow(0 0 14px rgba(33,150,243,0.30));\n  pointer-events: none;\n}\n\n@keyframes shine { to { background-position: 200% center; } }\n\n@keyframes sweep-sec {\n  0%   { background-position: 0% 0, 120% 0, -14px 50%; opacity: 0.70; }\n  50%  { opacity: 1; }\n  100% { background-position: 0% 0, -20% 0, calc(100% + 14px) 50%; opacity: 0.70; }\n}\n"
+      - type: custom:mushroom-template-card
+        entity: sensor.tesla_tele_batteria_12v
+        primary: '{% set s = states(''sensor.tesla_tele_batteria_12v'') %}Batteria 12V: {{ s if s not in [''unknown'', ''unavailable''] else ''nessun avviso'' }}'
+        secondary: '{{ state_attr(''sensor.tesla_tele_batteria_12v'', ''dettaglio'') or ''La diagnosi dell\''auto non ha segnalato problemi'' }}'
+        icon: mdi:car-battery
+        color: '{{ ''blue'' if states(''sensor.tesla_tele_batteria_12v'') in [''Nessun avviso'', ''Nessun avviso attivo'', ''unknown'', ''unavailable''] else ''orange'' }}'
+        multiline_secondary: true
+        tap_action:
+          action: more-info
+        hold_action:
+          action: more-info
+        card_mod:
+          style: "ha-card {\n  background: rgba(30,30,40,0.6);\n  border: 1px solid rgba(100,100,100,0.3);\n  border-radius: 16px;\n  backdrop-filter: blur(10px);\n}\n"
+      - type: custom:mushroom-template-card
+        entity: sensor.tesla_tele_ultimo_avviso
+        primary: '{% set s = states(''sensor.tesla_tele_ultimo_avviso'') %}Ultimo avviso: {{ s if s not in [''unknown'', ''unavailable''] else ''nessuno'' }}'
+        secondary: '{% set q = state_attr(''sensor.tesla_tele_ultimo_avviso'', ''quando'') %}{{ (q ~ '' · '' ~ (state_attr(''sensor.tesla_tele_ultimo_avviso'', ''gruppo'') or '''') ~ '' · '' ~ (state_attr(''sensor.tesla_tele_ultimo_avviso'', ''seconda_riga'') or '''')) if q else ''Arrivano solo gli avvisi che l\''auto mostra sullo schermo'' }}'
+        icon: mdi:car-info
+        color: blue
+        multiline_secondary: true
+        tap_action:
+          action: more-info
+        hold_action:
+          action: more-info
+        card_mod:
+          style: "ha-card {\n  background: rgba(30,30,40,0.6);\n  border: 1px solid rgba(100,100,100,0.3);\n  border-radius: 16px;\n  backdrop-filter: blur(10px);\n}\n"
+      - type: custom:mushroom-template-card
+        entity: sensor.tesla_tele_versione
+        primary: Versione {% set s = states('sensor.tesla_tele_versione') %}{{ s if s not in ['unknown', 'unavailable'] else '-' }}
+        secondary: 'Aggiornamento: {% set s = states(''sensor.tesla_tele_aggiornamento'') %}{{ s if s not in [''unknown'', ''unavailable''] else ''-'' }}{{ '', in corso'' if is_state(''binary_sensor.tesla_tele_aggiornamento_in_corso'', ''on'') else '''' }} · modo assistenza {% set s = states(''binary_sensor.tesla_tele_modo_assistenza'') %}{{ ''acceso'' if s == ''on'' else ''spento'' if s == ''off'' else ''-'' }}'
+        icon: mdi:update
+        color: blue
+        multiline_secondary: true
+        tap_action:
+          action: more-info
+        hold_action:
+          action: more-info
+        card_mod:
+          style: "ha-card {\n  background: rgba(30,30,40,0.6);\n  border: 1px solid rgba(100,100,100,0.3);\n  border-radius: 16px;\n  backdrop-filter: blur(10px);\n}\n"
+  - type: grid
+    column_span: 1
+    cards:
+    - type: vertical-stack
+      grid_options:
+        columns: full
+      cards:
+      - type: custom:mushroom-title-card
+        title: RICARICA
+        subtitle: ''
+        card_mod:
+          style: "ha-card { padding: 12px 16px 8px 16px; }\n\nha-card .title {\n  margin: 0 !important;\n  font-size: 20px !important;\n  font-weight: 700 !important;\n  line-height: 1.1;\n  display: inline-flex;\n  align-items: center;\n  gap: 10px;\n  background: linear-gradient(90deg, #ffb300, #ffca28, #ffb300);\n  background-size: 200% auto;\n  -webkit-background-clip: text;\n  -webkit-text-fill-color: transparent;\n  animation: shine 3s linear infinite;\n}\n\nha-card .title::before {\n  content: \"⚡\";\n  font-size: 20px;\n  line-height: 1;\n  -webkit-text-fill-color: #ffb300;\n  background: none !important;\n  filter: drop-shadow(0 0 8px rgba(255,179,0,0.75));\n}\n\nha-card .subtitle { display: none !important; }\n\nha-card::after {\n  content: \"\";\n  display: block;\n  width: 100%;\n  height: 4px;\n  margin-top: 10px;\n  border-radius: 999px;\n  background-image:\n    linear-gradient(90deg, rgba(255,179,0,0.30), rgba(255,202,40,0.30)),\n    linear-gradient(90deg,\n      transparent 0%,\n      rgba(255,179,0,0.00) 10%,\n      rgba(255,179,0,0.85) 28%,\n      rgba(255,202,40,0.95) 45%,\n      rgba(255,255,255,1.00) 50%,\n      rgba(255,202,40,0.95) 55%,\n      rgba(255,179,0,0.85) 72%,\n      rgba(255,179,0,0.00) 90%,\n      transparent 100%),\n    radial-gradient(circle,\n      rgba(255,255,255,1.00) 0%,\n      rgba(255,255,255,0.80) 30%,\n      rgba(255,179,0,0.50) 55%,\n      transparent 72%);\n  background-size: 100% 100%, 240% 100%, 24px 24px;\n  background-repeat: no-repeat;\n  background-position: 0% 0, 120% 0, -14px 50%;\n  animation: sweep-sec 2.7s ease-in-out infinite alternate;\n  will-change: background-position, opacity;\n  box-shadow:\n    0 0 14px rgba(255,179,0,0.70),\n    0 0 28px rgba(255,202,40,0.45),\n    0 0 4px rgba(255,255,255,0.30);\n  filter:\n    drop-shadow(0 0 8px rgba(255,255,255,0.25))\n    drop-shadow(0 0 14px rgba(255,179,0,0.30));\n  pointer-events: none;\n}\n\n@keyframes shine { to { background-position: 200% center; } }\n\n@keyframes sweep-sec {\n  0%   { background-position: 0% 0, 120% 0, -14px 50%; opacity: 0.70; }\n  50%  { opacity: 1; }\n  100% { background-position: 0% 0, -20% 0, calc(100% + 14px) 50%; opacity: 0.70; }\n}\n"
+      - type: custom:mushroom-template-card
+        entity: sensor.tesla_tele_stato_carica
+        primary: '{% set s = states(''sensor.tesla_tele_stato_carica'') %}{{ s if s not in [''unknown'', ''unavailable''] else ''-'' }} · AC {% set s = states(''sensor.tesla_tele_potenza_ac'') %}{{ (s | float | round(1)) | string | replace(''.'', '','') if is_number(s) else ''-'' }} kW · DC {% set s = states(''sensor.tesla_tele_potenza_dc'') %}{{ (s | float | round(1)) | string | replace(''.'', '','') if is_number(s) else ''-'' }} kW'
+        secondary: Batteria {% set s = states('sensor.tesla_tele_batteria') %}{{ (s | float | round(0)) | string | replace('.', ',') if is_number(s) else '-' }}% (utilizzabile {% set s = states('sensor.tesla_tele_batteria_utilizzabile') %}{{ (s | float | round(1)) | string | replace('.', ',') if is_number(s) else '-' }}%) · {% set s = states('sensor.tesla_tele_energia_batteria') %}{{ (s | float | round(1)) | string | replace('.', ',') if is_number(s) else '-' }} kWh · limite {% set s = states('sensor.tesla_tele_limite_carica') %}{{ (s | float | round(0)) | string | replace('.', ',') if is_number(s) else '-' }}%
+        icon: mdi:ev-station
+        color: amber
+        multiline_secondary: true
+        tap_action:
+          action: more-info
+        hold_action:
+          action: more-info
+        card_mod:
+          style: "ha-card {\n  background: rgba(30,30,40,0.6);\n  border: 1px solid rgba(100,100,100,0.3);\n  border-radius: 16px;\n  backdrop-filter: blur(10px);\n}\n"
+      - type: custom:mushroom-template-card
+        entity: sensor.tesla_tele_ampere
+        primary: '{% set s = states(''sensor.tesla_tele_ampere'') %}{{ (s | float | round(0)) | string | replace(''.'', '','') if is_number(s) else ''-'' }} A su {% set s = states(''sensor.tesla_tele_ampere_richiesti'') %}{{ (s | float | round(0)) | string | replace(''.'', '','') if is_number(s) else ''-'' }} A richiesti'
+        secondary: Massimo {% set s = states('sensor.tesla_tele_ampere_massimi') %}{{ (s | float | round(0)) | string | replace('.', ',') if is_number(s) else '-' }} A{% set f = states('sensor.tesla_tele_fasi') %}{{ ' · fasi ' ~ f if is_number(f) else '' }} · carica {% set s = states('binary_sensor.tesla_tele_carica_abilitata') %}{{ 'abilitata' if s == 'on' else 'ferma' if s == 'off' else '-' }}
+        icon: mdi:current-ac
+        color: amber
+        multiline_secondary: true
+        tap_action:
+          action: more-info
+        hold_action:
+          action: more-info
+        card_mod:
+          style: "ha-card {\n  background: rgba(30,30,40,0.6);\n  border: 1px solid rgba(100,100,100,0.3);\n  border-radius: 16px;\n  backdrop-filter: blur(10px);\n}\n"
+      - type: custom:mushroom-template-card
+        entity: binary_sensor.tesla_tele_sportello
+        primary: Sportello {% set s = states('binary_sensor.tesla_tele_sportello') %}{{ 'aperto' if s == 'on' else 'chiuso' if s == 'off' else '-' }}{% set s = states('sensor.tesla_tele_stato_carica') %}{% set l = states('sensor.tesla_tele_aggancio_cavo') %}{% if s == 'Scollegata' %} · cavo scollegato{% elif s not in ['unknown', 'unavailable'] %} · cavo {{ 'collegato' if l in ['Agganciato', 'unknown', 'unavailable'] else l | lower }}{% endif %}
+        secondary: 'Ricarica programmata: {% set s = states(''sensor.tesla_tele_ricarica_programmata'') %}{{ s if s not in [''unknown'', ''unavailable''] else ''-'' }}{{ '', in attesa dell\''orario'' if is_state(''binary_sensor.tesla_tele_in_attesa_orario'', ''on'') else '''' }}{% set i = states(''sensor.tesla_tele_inizio_programmato'') %}{{ '' · inizio '' ~ i if i not in [''unknown'', ''unavailable''] else '''' }}'
+        icon: mdi:ev-plug-type2
+        color: '{{ ''amber'' if is_state(''binary_sensor.tesla_tele_in_attesa_orario'', ''on'') else ''blue'' }}'
+        multiline_secondary: true
+        tap_action:
+          action: more-info
+        hold_action:
+          action: more-info
+        card_mod:
+          style: "ha-card {\n  background: rgba(30,30,40,0.6);\n  border: 1px solid rgba(100,100,100,0.3);\n  border-radius: 16px;\n  backdrop-filter: blur(10px);\n}\n"
+    - type: vertical-stack
+      grid_options:
+        columns: full
+      cards:
+      - type: custom:mushroom-title-card
+        title: BATTERIA E CARICA, 24 ORE
+        subtitle: ''
+        card_mod:
+          style: "ha-card { padding: 12px 16px 8px 16px; }\n\nha-card .title {\n  margin: 0 !important;\n  font-size: 20px !important;\n  font-weight: 700 !important;\n  line-height: 1.1;\n  display: inline-flex;\n  align-items: center;\n  gap: 10px;\n  background: linear-gradient(90deg, #ffb300, #ffca28, #ffb300);\n  background-size: 200% auto;\n  -webkit-background-clip: text;\n  -webkit-text-fill-color: transparent;\n  animation: shine 3s linear infinite;\n}\n\nha-card .title::before {\n  content: \"\U0001F4C8\";\n  font-size: 20px;\n  line-height: 1;\n  -webkit-text-fill-color: #ffb300;\n  background: none !important;\n  filter: drop-shadow(0 0 8px rgba(255,179,0,0.75));\n}\n\nha-card .subtitle { display: none !important; }\n\nha-card::after {\n  content: \"\";\n  display: block;\n  width: 100%;\n  height: 4px;\n  margin-top: 10px;\n  border-radius: 999px;\n  background-image:\n    linear-gradient(90deg, rgba(255,179,0,0.30), rgba(255,202,40,0.30)),\n    linear-gradient(90deg,\n      transparent 0%,\n      rgba(255,179,0,0.00) 10%,\n      rgba(255,179,0,0.85) 28%,\n      rgba(255,202,40,0.95) 45%,\n      rgba(255,255,255,1.00) 50%,\n      rgba(255,202,40,0.95) 55%,\n      rgba(255,179,0,0.85) 72%,\n      rgba(255,179,0,0.00) 90%,\n      transparent 100%),\n    radial-gradient(circle,\n      rgba(255,255,255,1.00) 0%,\n      rgba(255,255,255,0.80) 30%,\n      rgba(255,179,0,0.50) 55%,\n      transparent 72%);\n  background-size: 100% 100%, 240% 100%, 24px 24px;\n  background-repeat: no-repeat;\n  background-position: 0% 0, 120% 0, -14px 50%;\n  animation: sweep-sec 2.7s ease-in-out infinite alternate;\n  will-change: background-position, opacity;\n  box-shadow:\n    0 0 14px rgba(255,179,0,0.70),\n    0 0 28px rgba(255,202,40,0.45),\n    0 0 4px rgba(255,255,255,0.30);\n  filter:\n    drop-shadow(0 0 8px rgba(255,255,255,0.25))\n    drop-shadow(0 0 14px rgba(255,179,0,0.30));\n  pointer-events: none;\n}\n\n@keyframes shine { to { background-position: 200% center; } }\n\n@keyframes sweep-sec {\n  0%   { background-position: 0% 0, 120% 0, -14px 50%; opacity: 0.70; }\n  50%  { opacity: 1; }\n  100% { background-position: 0% 0, -20% 0, calc(100% + 14px) 50%; opacity: 0.70; }\n}\n"
+      - type: custom:apexcharts-card
+        graph_span: 24h
+        apex_config:
+          chart:
+            height: 200
+            foreColor: '#c9cdd6'
+            fontFamily: inherit
+            toolbar:
+              show: false
+            zoom:
+              enabled: false
+            background: transparent
+          grid:
+            borderColor: rgba(255,255,255,0.07)
+            strokeDashArray: 0
+            xaxis:
+              lines:
+                show: false
+            padding:
+              left: 4
+              right: 8
+              top: -8
+          legend:
+            show: false
+            position: top
+            horizontalAlign: left
+            fontSize: 12px
+            markers:
+              width: 10
+              height: 10
+              radius: 10
+            itemMargin:
+              horizontal: 8
+          dataLabels:
+            enabled: false
+          tooltip:
+            theme: dark
+          xaxis:
+            axisBorder:
+              show: false
+            axisTicks:
+              show: false
+          plotOptions:
+            bar:
+              borderRadius: 5
+              borderRadiusApplication: end
+              columnWidth: 60%
+          fill:
+            type:
+            - gradient
+            - gradient
+            gradient:
+              shadeIntensity: 1
+              opacityFrom: 0.45
+              opacityTo: 0.03
+              stops:
+              - 0
+              - 90
+              - 100
+        series:
+        - entity: sensor.tesla_tele_batteria
+          name: Batteria
+          type: area
+          color: '#0072B2'
+          stroke_width: 2.5
+          curve: smooth
+          yaxis_id: pct
+          show:
+            legend_value: false
+        - entity: sensor.tesla_tele_potenza_ac
+          name: Potenza AC
+          type: area
+          color: '#E69F00'
+          stroke_width: 2.5
+          curve: smooth
+          yaxis_id: kw
+          show:
+            legend_value: false
+        header:
+          show: true
+          show_states: true
+          colorize_states: true
+        yaxis:
+        - id: pct
+          min: 0
+          max: 100
+          decimals: 0
+        - id: kw
+          opposite: true
+          min: 0
+          decimals: 1
+        card_mod:
+          style: "ha-card {\n  background: rgba(30,30,40,0.6);\n  border: 1px solid rgba(100,100,100,0.3);\n  border-radius: 16px;\n  backdrop-filter: blur(10px);\n}\n"
+    - type: vertical-stack
+      grid_options:
+        columns: full
+      cards:
+      - type: custom:mushroom-title-card
+        title: BATTERIA
+        subtitle: ''
+        card_mod:
+          style: "ha-card { padding: 12px 16px 8px 16px; }\n\nha-card .title {\n  margin: 0 !important;\n  font-size: 20px !important;\n  font-weight: 700 !important;\n  line-height: 1.1;\n  display: inline-flex;\n  align-items: center;\n  gap: 10px;\n  background: linear-gradient(90deg, #26a69a, #4db6ac, #26a69a);\n  background-size: 200% auto;\n  -webkit-background-clip: text;\n  -webkit-text-fill-color: transparent;\n  animation: shine 3s linear infinite;\n}\n\nha-card .title::before {\n  content: \"\U0001F50B\";\n  font-size: 20px;\n  line-height: 1;\n  -webkit-text-fill-color: #26a69a;\n  background: none !important;\n  filter: drop-shadow(0 0 8px rgba(38,166,154,0.75));\n}\n\nha-card .subtitle { display: none !important; }\n\nha-card::after {\n  content: \"\";\n  display: block;\n  width: 100%;\n  height: 4px;\n  margin-top: 10px;\n  border-radius: 999px;\n  background-image:\n    linear-gradient(90deg, rgba(38,166,154,0.30), rgba(77,182,172,0.30)),\n    linear-gradient(90deg,\n      transparent 0%,\n      rgba(38,166,154,0.00) 10%,\n      rgba(38,166,154,0.85) 28%,\n      rgba(77,182,172,0.95) 45%,\n      rgba(255,255,255,1.00) 50%,\n      rgba(77,182,172,0.95) 55%,\n      rgba(38,166,154,0.85) 72%,\n      rgba(38,166,154,0.00) 90%,\n      transparent 100%),\n    radial-gradient(circle,\n      rgba(255,255,255,1.00) 0%,\n      rgba(255,255,255,0.80) 30%,\n      rgba(38,166,154,0.50) 55%,\n      transparent 72%);\n  background-size: 100% 100%, 240% 100%, 24px 24px;\n  background-repeat: no-repeat;\n  background-position: 0% 0, 120% 0, -14px 50%;\n  animation: sweep-sec 2.7s ease-in-out infinite alternate;\n  will-change: background-position, opacity;\n  box-shadow:\n    0 0 14px rgba(38,166,154,0.70),\n    0 0 28px rgba(77,182,172,0.45),\n    0 0 4px rgba(255,255,255,0.30);\n  filter:\n    drop-shadow(0 0 8px rgba(255,255,255,0.25))\n    drop-shadow(0 0 14px rgba(38,166,154,0.30));\n  pointer-events: none;\n}\n\n@keyframes shine { to { background-position: 200% center; } }\n\n@keyframes sweep-sec {\n  0%   { background-position: 0% 0, 120% 0, -14px 50%; opacity: 0.70; }\n  50%  { opacity: 1; }\n  100% { background-position: 0% 0, -20% 0, calc(100% + 14px) 50%; opacity: 0.70; }\n}\n"
+      - type: custom:mushroom-template-card
+        entity: sensor.tesla_tele_capacita_batteria
+        primary: Capacità {% set s = states('sensor.tesla_tele_capacita_batteria') %}{{ (s | float | round(1)) | string | replace('.', ',') if is_number(s) else '-' }} kWh
+        secondary: Carica al 100% completata {% set s = states('binary_sensor.tesla_tele_carica_100') %}{{ 'sì' if s == 'on' else 'no' if s == 'off' else '-' }} · riscaldamento {% set s = states('binary_sensor.tesla_tele_riscaldamento_batteria') %}{{ 'acceso' if s == 'on' else 'spento' if s == 'off' else '-' }}
+        icon: mdi:battery-heart-variant
+        color: teal
+        multiline_secondary: true
+        tap_action:
+          action: more-info
+        hold_action:
+          action: more-info
+        card_mod:
+          style: "ha-card {\n  background: rgba(30,30,40,0.6);\n  border: 1px solid rgba(100,100,100,0.3);\n  border-radius: 16px;\n  backdrop-filter: blur(10px);\n}\n"
+      - type: custom:mushroom-template-card
+        entity: sensor.tesla_tele_capacita_misurata
+        primary: '{% set s = states(''sensor.tesla_tele_capacita_misurata'') %}Capacità misurata alla ricarica: {{ (s ~ '' kWh'') if is_number(s) else ''nessuna ancora'' }}'
+        secondary: '{% set e = state_attr(''sensor.tesla_tele_capacita_misurata'', ''ultima_esito'') %}{% set d = state_attr(''sensor.tesla_tele_capacita_misurata'', ''ultima_data'') %}{{ (''Ultima ricarica: '' ~ e ~ (('' il '' ~ (as_timestamp(d) | timestamp_custom(''%d/%m''))) if d else '''')) if e else ''Si misura a ogni ricarica di almeno 20 punti'' }}'
+        icon: mdi:battery-check-outline
+        color: teal
+        multiline_secondary: true
+        tap_action:
+          action: more-info
+        hold_action:
+          action: more-info
+        card_mod:
+          style: "ha-card {\n  background: rgba(30,30,40,0.6);\n  border: 1px solid rgba(100,100,100,0.3);\n  border-radius: 16px;\n  backdrop-filter: blur(10px);\n}\n"
+      - type: custom:mushroom-template-card
+        entity: sensor.tesla_tele_temp_batteria_max
+        primary: Moduli da {% set s = states('sensor.tesla_tele_temp_batteria_min') %}{{ (s | float | round(0)) | string | replace('.', ',') if is_number(s) else '-' }} a {% set s = states('sensor.tesla_tele_temp_batteria_max') %}{{ (s | float | round(0)) | string | replace('.', ',') if is_number(s) else '-' }} °C
+        secondary: 'Il freddo rallenta la carica: sotto i 10 °C l''auto scalda la batteria'
+        icon: mdi:thermometer
+        color: teal
+        multiline_secondary: true
+        tap_action:
+          action: more-info
+        hold_action:
+          action: more-info
+        card_mod:
+          style: "ha-card {\n  background: rgba(30,30,40,0.6);\n  border: 1px solid rgba(100,100,100,0.3);\n  border-radius: 16px;\n  backdrop-filter: blur(10px);\n}\n"
+      - type: custom:mushroom-template-card
+        entity: sensor.tesla_tele_energia_caricata
+        primary: Caricati {% set s = states('sensor.tesla_tele_energia_caricata') %}{{ '{:,.0f}'.format(s | float) | replace(',', '.') if is_number(s) else '-' }} · usati {% set s = states('sensor.tesla_tele_energia_usata') %}{{ '{:,.0f}'.format(s | float) | replace(',', '.') if is_number(s) else '-' }} kWh
+        secondary: Di cui DC {% set s = states('sensor.tesla_tele_energia_caricata_dc') %}{{ '{:,.0f}'.format(s | float) | replace(',', '.') if is_number(s) else '-' }} kWh{% if is_number(states('sensor.tesla_tele_energia_recuperata')) %} · recuperati in frenata {% set s = states('sensor.tesla_tele_energia_recuperata') %}{{ '{:,.0f}'.format(s | float) | replace(',', '.') if is_number(s) else '-' }} kWh{% endif %} · media di sempre {% set u = states('sensor.tesla_tele_energia_usata') %}{% set k = states('sensor.tesla_tele_contachilometri') %}{{ ((u | float * 1000) / (k | float)) | round(0) | int if is_number(u) and is_number(k) and k | float > 0 else '-' }} Wh/km, soste e clima comprese
+        icon: mdi:counter
+        color: teal
+        multiline_secondary: true
+        tap_action:
+          action: more-info
+        hold_action:
+          action: more-info
+        card_mod:
+          style: "ha-card {\n  background: rgba(30,30,40,0.6);\n  border: 1px solid rgba(100,100,100,0.3);\n  border-radius: 16px;\n  backdrop-filter: blur(10px);\n}\n"
+      - type: custom:mushroom-title-card
+        title: CAPACITÀ DELLA BATTERIA, 1 ANNO
+        subtitle: ''
+        card_mod:
+          style: "ha-card { padding: 12px 16px 8px 16px; }\n\nha-card .title {\n  margin: 0 !important;\n  font-size: 20px !important;\n  font-weight: 700 !important;\n  line-height: 1.1;\n  display: inline-flex;\n  align-items: center;\n  gap: 10px;\n  background: linear-gradient(90deg, #26a69a, #4db6ac, #26a69a);\n  background-size: 200% auto;\n  -webkit-background-clip: text;\n  -webkit-text-fill-color: transparent;\n  animation: shine 3s linear infinite;\n}\n\nha-card .title::before {\n  content: \"\U0001F4C9\";\n  font-size: 20px;\n  line-height: 1;\n  -webkit-text-fill-color: #26a69a;\n  background: none !important;\n  filter: drop-shadow(0 0 8px rgba(38,166,154,0.75));\n}\n\nha-card .subtitle { display: none !important; }\n\nha-card::after {\n  content: \"\";\n  display: block;\n  width: 100%;\n  height: 4px;\n  margin-top: 10px;\n  border-radius: 999px;\n  background-image:\n    linear-gradient(90deg, rgba(38,166,154,0.30), rgba(77,182,172,0.30)),\n    linear-gradient(90deg,\n      transparent 0%,\n      rgba(38,166,154,0.00) 10%,\n      rgba(38,166,154,0.85) 28%,\n      rgba(77,182,172,0.95) 45%,\n      rgba(255,255,255,1.00) 50%,\n      rgba(77,182,172,0.95) 55%,\n      rgba(38,166,154,0.85) 72%,\n      rgba(38,166,154,0.00) 90%,\n      transparent 100%),\n    radial-gradient(circle,\n      rgba(255,255,255,1.00) 0%,\n      rgba(255,255,255,0.80) 30%,\n      rgba(38,166,154,0.50) 55%,\n      transparent 72%);\n  background-size: 100% 100%, 240% 100%, 24px 24px;\n  background-repeat: no-repeat;\n  background-position: 0% 0, 120% 0, -14px 50%;\n  animation: sweep-sec 2.7s ease-in-out infinite alternate;\n  will-change: background-position, opacity;\n  box-shadow:\n    0 0 14px rgba(38,166,154,0.70),\n    0 0 28px rgba(77,182,172,0.45),\n    0 0 4px rgba(255,255,255,0.30);\n  filter:\n    drop-shadow(0 0 8px rgba(255,255,255,0.25))\n    drop-shadow(0 0 14px rgba(38,166,154,0.30));\n  pointer-events: none;\n}\n\n@keyframes shine { to { background-position: 200% center; } }\n\n@keyframes sweep-sec {\n  0%   { background-position: 0% 0, 120% 0, -14px 50%; opacity: 0.70; }\n  50%  { opacity: 1; }\n  100% { background-position: 0% 0, -20% 0, calc(100% + 14px) 50%; opacity: 0.70; }\n}\n"
+      - type: custom:apexcharts-card
+        graph_span: 365d
+        apex_config:
+          chart:
+            height: 190
+            foreColor: '#c9cdd6'
+            fontFamily: inherit
+            toolbar:
+              show: false
+            zoom:
+              enabled: false
+            background: transparent
+          grid:
+            borderColor: rgba(255,255,255,0.07)
+            strokeDashArray: 0
+            xaxis:
+              lines:
+                show: false
+            padding:
+              left: 4
+              right: 8
+              top: -8
+          legend:
+            show: true
+            position: top
+            horizontalAlign: left
+            fontSize: 12px
+            markers:
+              width: 10
+              height: 10
+              radius: 10
+            itemMargin:
+              horizontal: 8
+          dataLabels:
+            enabled: false
+          tooltip:
+            theme: dark
+          xaxis:
+            axisBorder:
+              show: false
+            axisTicks:
+              show: false
+          plotOptions:
+            bar:
+              borderRadius: 5
+              borderRadiusApplication: end
+              columnWidth: 60%
+          markers:
+            size: 4
+            strokeWidth: 0
+        series:
+        - entity: sensor.tesla_tele_capacita_batteria
+          name: Stima del BMS
+          type: line
+          color: '#0072B2'
+          statistics:
+            type: mean
+            period: day
+            align: middle
+          curve: smooth
+          stroke_width: 2.5
+          show:
+            legend_value: false
+        header:
+          show: false
+        span:
+          end: day
+        card_mod:
+          style: "ha-card {\n  background: rgba(30,30,40,0.6);\n  border: 1px solid rgba(100,100,100,0.3);\n  border-radius: 16px;\n  backdrop-filter: blur(10px);\n}\n"
+  - type: grid
+    column_span: 1
+    cards:
+    - type: vertical-stack
+      grid_options:
+        columns: full
+      cards:
+      - type: custom:mushroom-title-card
+        title: CLIMA E SEDILI
+        subtitle: ''
+        card_mod:
+          style: "ha-card { padding: 12px 16px 8px 16px; }\n\nha-card .title {\n  margin: 0 !important;\n  font-size: 20px !important;\n  font-weight: 700 !important;\n  line-height: 1.1;\n  display: inline-flex;\n  align-items: center;\n  gap: 10px;\n  background: linear-gradient(90deg, #ce93d8, #ba68c8, #ce93d8);\n  background-size: 200% auto;\n  -webkit-background-clip: text;\n  -webkit-text-fill-color: transparent;\n  animation: shine 3s linear infinite;\n}\n\nha-card .title::before {\n  content: \"\U0001F321️\";\n  font-size: 20px;\n  line-height: 1;\n  -webkit-text-fill-color: #ce93d8;\n  background: none !important;\n  filter: drop-shadow(0 0 8px rgba(206,147,216,0.75));\n}\n\nha-card .subtitle { display: none !important; }\n\nha-card::after {\n  content: \"\";\n  display: block;\n  width: 100%;\n  height: 4px;\n  margin-top: 10px;\n  border-radius: 999px;\n  background-image:\n    linear-gradient(90deg, rgba(206,147,216,0.30), rgba(186,104,200,0.30)),\n    linear-gradient(90deg,\n      transparent 0%,\n      rgba(206,147,216,0.00) 10%,\n      rgba(206,147,216,0.85) 28%,\n      rgba(186,104,200,0.95) 45%,\n      rgba(255,255,255,1.00) 50%,\n      rgba(186,104,200,0.95) 55%,\n      rgba(206,147,216,0.85) 72%,\n      rgba(206,147,216,0.00) 90%,\n      transparent 100%),\n    radial-gradient(circle,\n      rgba(255,255,255,1.00) 0%,\n      rgba(255,255,255,0.80) 30%,\n      rgba(206,147,216,0.50) 55%,\n      transparent 72%);\n  background-size: 100% 100%, 240% 100%, 24px 24px;\n  background-repeat: no-repeat;\n  background-position: 0% 0, 120% 0, -14px 50%;\n  animation: sweep-sec 2.7s ease-in-out infinite alternate;\n  will-change: background-position, opacity;\n  box-shadow:\n    0 0 14px rgba(206,147,216,0.70),\n    0 0 28px rgba(186,104,200,0.45),\n    0 0 4px rgba(255,255,255,0.30);\n  filter:\n    drop-shadow(0 0 8px rgba(255,255,255,0.25))\n    drop-shadow(0 0 14px rgba(206,147,216,0.30));\n  pointer-events: none;\n}\n\n@keyframes shine { to { background-position: 200% center; } }\n\n@keyframes sweep-sec {\n  0%   { background-position: 0% 0, 120% 0, -14px 50%; opacity: 0.70; }\n  50%  { opacity: 1; }\n  100% { background-position: 0% 0, -20% 0, calc(100% + 14px) 50%; opacity: 0.70; }\n}\n"
+      - type: custom:mushroom-template-card
+        entity: sensor.tesla_tele_temp_interna
+        primary: Interna {% set s = states('sensor.tesla_tele_temp_interna') %}{{ (s | float | round(1)) | string | replace('.', ',') if is_number(s) else '-' }} °C · esterna {% set s = states('sensor.tesla_tele_temp_esterna') %}{{ (s | float | round(1)) | string | replace('.', ',') if is_number(s) else '-' }} °C
+        secondary: Impostata {% set s = states('sensor.tesla_tele_temp_impostata') %}{{ (s | float | round(1)) | string | replace('.', ',') if is_number(s) else '-' }} °C · clima {% set s = states('sensor.tesla_tele_clima') %}{{ s if s not in ['unknown', 'unavailable'] else '-' }}
+        icon: mdi:thermometer
+        color: purple
+        multiline_secondary: true
+        tap_action:
+          action: more-info
+        hold_action:
+          action: more-info
+        card_mod:
+          style: "ha-card {\n  background: rgba(30,30,40,0.6);\n  border: 1px solid rgba(100,100,100,0.3);\n  border-radius: 16px;\n  backdrop-filter: blur(10px);\n}\n"
+      - type: custom:mushroom-template-card
+        entity: sensor.tesla_tele_modalita_clima
+        primary: 'Modalità clima: {% set s = states(''sensor.tesla_tele_modalita_clima'') %}{{ s if s not in [''unknown'', ''unavailable''] else ''-'' }}'
+        secondary: 'Protezione dal caldo: {% set s = states(''sensor.tesla_tele_protezione_caldo'') %}{{ s if s not in [''unknown'', ''unavailable''] else ''-'' }} · precondizionamento {% set s = states(''binary_sensor.tesla_tele_precondizionamento'') %}{{ ''acceso'' if s == ''on'' else ''spento'' if s == ''off'' else ''-'' }}'
+        icon: mdi:fan
+        color: purple
+        multiline_secondary: true
+        tap_action:
+          action: more-info
+        hold_action:
+          action: more-info
+        card_mod:
+          style: "ha-card {\n  background: rgba(30,30,40,0.6);\n  border: 1px solid rgba(100,100,100,0.3);\n  border-radius: 16px;\n  backdrop-filter: blur(10px);\n}\n"
+      - type: custom:mushroom-template-card
+        entity: sensor.tesla_tele_sedile_guida
+        primary: Guida {% set s = states('sensor.tesla_tele_sedile_guida') %}{{ s if s not in ['unknown', 'unavailable'] else '-' }}{{ ' auto' if is_state('binary_sensor.tesla_tele_sedile_guida_auto', 'on') else '' }} · passeggero {% set s = states('sensor.tesla_tele_sedile_passeggero') %}{{ s if s not in ['unknown', 'unavailable'] else '-' }}{{ ' auto' if is_state('binary_sensor.tesla_tele_sedile_passeggero_auto', 'on') else '' }}
+        secondary: 'Posteriori: sinistro {% set s = states(''sensor.tesla_tele_sedile_post_sx'') %}{{ s if s not in [''unknown'', ''unavailable''] else ''-'' }} · centro {% set s = states(''sensor.tesla_tele_sedile_post_centro'') %}{{ s if s not in [''unknown'', ''unavailable''] else ''-'' }} · destro {% set s = states(''sensor.tesla_tele_sedile_post_dx'') %}{{ s if s not in [''unknown'', ''unavailable''] else ''-'' }}'
+        icon: mdi:car-seat-heater
+        color: purple
+        multiline_secondary: true
+        tap_action:
+          action: more-info
+        hold_action:
+          action: more-info
+        card_mod:
+          style: "ha-card {\n  background: rgba(30,30,40,0.6);\n  border: 1px solid rgba(100,100,100,0.3);\n  border-radius: 16px;\n  backdrop-filter: blur(10px);\n}\n"
+      - type: custom:mushroom-title-card
+        title: TEMPERATURE, 24 ORE
+        subtitle: ''
+        card_mod:
+          style: "ha-card { padding: 12px 16px 8px 16px; }\n\nha-card .title {\n  margin: 0 !important;\n  font-size: 20px !important;\n  font-weight: 700 !important;\n  line-height: 1.1;\n  display: inline-flex;\n  align-items: center;\n  gap: 10px;\n  background: linear-gradient(90deg, #ce93d8, #ba68c8, #ce93d8);\n  background-size: 200% auto;\n  -webkit-background-clip: text;\n  -webkit-text-fill-color: transparent;\n  animation: shine 3s linear infinite;\n}\n\nha-card .title::before {\n  content: \"\U0001F321️\";\n  font-size: 20px;\n  line-height: 1;\n  -webkit-text-fill-color: #ce93d8;\n  background: none !important;\n  filter: drop-shadow(0 0 8px rgba(206,147,216,0.75));\n}\n\nha-card .subtitle { display: none !important; }\n\nha-card::after {\n  content: \"\";\n  display: block;\n  width: 100%;\n  height: 4px;\n  margin-top: 10px;\n  border-radius: 999px;\n  background-image:\n    linear-gradient(90deg, rgba(206,147,216,0.30), rgba(186,104,200,0.30)),\n    linear-gradient(90deg,\n      transparent 0%,\n      rgba(206,147,216,0.00) 10%,\n      rgba(206,147,216,0.85) 28%,\n      rgba(186,104,200,0.95) 45%,\n      rgba(255,255,255,1.00) 50%,\n      rgba(186,104,200,0.95) 55%,\n      rgba(206,147,216,0.85) 72%,\n      rgba(206,147,216,0.00) 90%,\n      transparent 100%),\n    radial-gradient(circle,\n      rgba(255,255,255,1.00) 0%,\n      rgba(255,255,255,0.80) 30%,\n      rgba(206,147,216,0.50) 55%,\n      transparent 72%);\n  background-size: 100% 100%, 240% 100%, 24px 24px;\n  background-repeat: no-repeat;\n  background-position: 0% 0, 120% 0, -14px 50%;\n  animation: sweep-sec 2.7s ease-in-out infinite alternate;\n  will-change: background-position, opacity;\n  box-shadow:\n    0 0 14px rgba(206,147,216,0.70),\n    0 0 28px rgba(186,104,200,0.45),\n    0 0 4px rgba(255,255,255,0.30);\n  filter:\n    drop-shadow(0 0 8px rgba(255,255,255,0.25))\n    drop-shadow(0 0 14px rgba(206,147,216,0.30));\n  pointer-events: none;\n}\n\n@keyframes shine { to { background-position: 200% center; } }\n\n@keyframes sweep-sec {\n  0%   { background-position: 0% 0, 120% 0, -14px 50%; opacity: 0.70; }\n  50%  { opacity: 1; }\n  100% { background-position: 0% 0, -20% 0, calc(100% + 14px) 50%; opacity: 0.70; }\n}\n"
+      - type: custom:apexcharts-card
+        graph_span: 24h
+        apex_config:
+          chart:
+            height: 200
+            foreColor: '#c9cdd6'
+            fontFamily: inherit
+            toolbar:
+              show: false
+            zoom:
+              enabled: false
+            background: transparent
+          grid:
+            borderColor: rgba(255,255,255,0.07)
+            strokeDashArray: 0
+            xaxis:
+              lines:
+                show: false
+            padding:
+              left: 4
+              right: 8
+              top: -8
+          legend:
+            show: false
+            position: top
+            horizontalAlign: left
+            fontSize: 12px
+            markers:
+              width: 10
+              height: 10
+              radius: 10
+            itemMargin:
+              horizontal: 8
+          dataLabels:
+            enabled: false
+          tooltip:
+            theme: dark
+          xaxis:
+            axisBorder:
+              show: false
+            axisTicks:
+              show: false
+          plotOptions:
+            bar:
+              borderRadius: 5
+              borderRadiusApplication: end
+              columnWidth: 60%
+        series:
+        - entity: sensor.tesla_tele_temp_interna
+          name: Interna
+          type: line
+          color: '#E69F00'
+          stroke_width: 2.5
+          curve: smooth
+          group_by:
+            func: avg
+            duration: 10min
+          show:
+            legend_value: false
+        - entity: sensor.tesla_tele_temp_esterna
+          name: Esterna
+          type: line
+          color: '#56B4E9'
+          stroke_width: 2.5
+          curve: smooth
+          group_by:
+            func: avg
+            duration: 10min
+          show:
+            legend_value: false
+        - entity: sensor.tesla_tele_temp_batteria_max
+          name: Batteria
+          type: line
+          color: '#CC79A7'
+          stroke_width: 2.5
+          curve: smooth
+          group_by:
+            func: avg
+            duration: 10min
+          show:
+            legend_value: false
+        header:
+          show: true
+          show_states: true
+          colorize_states: true
+        card_mod:
+          style: "ha-card {\n  background: rgba(30,30,40,0.6);\n  border: 1px solid rgba(100,100,100,0.3);\n  border-radius: 16px;\n  backdrop-filter: blur(10px);\n}\n"
+    - type: vertical-stack
+      grid_options:
+        columns: full
+      cards:
+      - type: custom:mushroom-title-card
+        title: GOMME
+        subtitle: ''
+        card_mod:
+          style: "ha-card { padding: 12px 16px 8px 16px; }\n\nha-card .title {\n  margin: 0 !important;\n  font-size: 20px !important;\n  font-weight: 700 !important;\n  line-height: 1.1;\n  display: inline-flex;\n  align-items: center;\n  gap: 10px;\n  background: linear-gradient(90deg, #2196f3, #42a5f5, #2196f3);\n  background-size: 200% auto;\n  -webkit-background-clip: text;\n  -webkit-text-fill-color: transparent;\n  animation: shine 3s linear infinite;\n}\n\nha-card .title::before {\n  content: \"\U0001F6DE\";\n  font-size: 20px;\n  line-height: 1;\n  -webkit-text-fill-color: #2196f3;\n  background: none !important;\n  filter: drop-shadow(0 0 8px rgba(33,150,243,0.75));\n}\n\nha-card .subtitle { display: none !important; }\n\nha-card::after {\n  content: \"\";\n  display: block;\n  width: 100%;\n  height: 4px;\n  margin-top: 10px;\n  border-radius: 999px;\n  background-image:\n    linear-gradient(90deg, rgba(33,150,243,0.30), rgba(66,165,245,0.30)),\n    linear-gradient(90deg,\n      transparent 0%,\n      rgba(33,150,243,0.00) 10%,\n      rgba(33,150,243,0.85) 28%,\n      rgba(66,165,245,0.95) 45%,\n      rgba(255,255,255,1.00) 50%,\n      rgba(66,165,245,0.95) 55%,\n      rgba(33,150,243,0.85) 72%,\n      rgba(33,150,243,0.00) 90%,\n      transparent 100%),\n    radial-gradient(circle,\n      rgba(255,255,255,1.00) 0%,\n      rgba(255,255,255,0.80) 30%,\n      rgba(33,150,243,0.50) 55%,\n      transparent 72%);\n  background-size: 100% 100%, 240% 100%, 24px 24px;\n  background-repeat: no-repeat;\n  background-position: 0% 0, 120% 0, -14px 50%;\n  animation: sweep-sec 2.7s ease-in-out infinite alternate;\n  will-change: background-position, opacity;\n  box-shadow:\n    0 0 14px rgba(33,150,243,0.70),\n    0 0 28px rgba(66,165,245,0.45),\n    0 0 4px rgba(255,255,255,0.30);\n  filter:\n    drop-shadow(0 0 8px rgba(255,255,255,0.25))\n    drop-shadow(0 0 14px rgba(33,150,243,0.30));\n  pointer-events: none;\n}\n\n@keyframes shine { to { background-position: 200% center; } }\n\n@keyframes sweep-sec {\n  0%   { background-position: 0% 0, 120% 0, -14px 50%; opacity: 0.70; }\n  50%  { opacity: 1; }\n  100% { background-position: 0% 0, -20% 0, calc(100% + 14px) 50%; opacity: 0.70; }\n}\n"
+      - type: custom:mushroom-template-card
+        entity: sensor.tesla_tele_gomma_ant_sx
+        primary: Anteriori {% set s = states('sensor.tesla_tele_gomma_ant_sx') %}{{ (s | float | round(2)) | string | replace('.', ',') if is_number(s) else '-' }} | {% set s = states('sensor.tesla_tele_gomma_ant_dx') %}{{ (s | float | round(2)) | string | replace('.', ',') if is_number(s) else '-' }} bar
+        secondary: Posteriori {% set s = states('sensor.tesla_tele_gomma_post_sx') %}{{ (s | float | round(2)) | string | replace('.', ',') if is_number(s) else '-' }} | {% set s = states('sensor.tesla_tele_gomma_post_dx') %}{{ (s | float | round(2)) | string | replace('.', ',') if is_number(s) else '-' }} bar{{ ' · AVVISO DELL\'AUTO' if is_state('binary_sensor.tesla_tele_avviso_gomme', 'on') or is_state('binary_sensor.tesla_tele_allarme_gomme', 'on') else '' }}
+        icon: mdi:tire
+        color: '{{ ''orange'' if is_state(''binary_sensor.tesla_tele_avviso_gomme'', ''on'') or is_state(''binary_sensor.tesla_tele_allarme_gomme'', ''on'') else ''blue'' }}'
+        multiline_secondary: true
+        tap_action:
+          action: more-info
+        hold_action:
+          action: more-info
+        card_mod:
+          style: "ha-card {\n  background: rgba(30,30,40,0.6);\n  border: 1px solid rgba(100,100,100,0.3);\n  border-radius: 16px;\n  backdrop-filter: blur(10px);\n}\n"
+      - type: custom:apexcharts-card
+        graph_span: 7d
+        apex_config:
+          chart:
+            height: 190
+            foreColor: '#c9cdd6'
+            fontFamily: inherit
+            toolbar:
+              show: false
+            zoom:
+              enabled: false
+            background: transparent
+          grid:
+            borderColor: rgba(255,255,255,0.07)
+            strokeDashArray: 0
+            xaxis:
+              lines:
+                show: false
+            padding:
+              left: 4
+              right: 8
+              top: -8
+          legend:
+            show: true
+            position: top
+            horizontalAlign: left
+            fontSize: 12px
+            markers:
+              width: 10
+              height: 10
+              radius: 10
+            itemMargin:
+              horizontal: 8
+          dataLabels:
+            enabled: false
+          tooltip:
+            theme: dark
+          xaxis:
+            axisBorder:
+              show: false
+            axisTicks:
+              show: false
+          plotOptions:
+            bar:
+              borderRadius: 5
+              borderRadiusApplication: end
+              columnWidth: 60%
+        series:
+        - entity: sensor.tesla_tele_gomma_ant_sx
+          name: Ant. sx
+          type: line
+          color: '#0072B2'
+          stroke_width: 2.5
+          curve: smooth
+          group_by:
+            func: avg
+            duration: 1h
+          float_precision: 2
+          show:
+            legend_value: false
+        - entity: sensor.tesla_tele_gomma_ant_dx
+          name: Ant. dx
+          type: line
+          color: '#56B4E9'
+          stroke_width: 2.5
+          curve: smooth
+          group_by:
+            func: avg
+            duration: 1h
+          float_precision: 2
+          show:
+            legend_value: false
+        - entity: sensor.tesla_tele_gomma_post_sx
+          name: Post. sx
+          type: line
+          color: '#E69F00'
+          stroke_width: 2.5
+          curve: smooth
+          group_by:
+            func: avg
+            duration: 1h
+          float_precision: 2
+          show:
+            legend_value: false
+        - entity: sensor.tesla_tele_gomma_post_dx
+          name: Post. dx
+          type: line
+          color: '#CC79A7'
+          stroke_width: 2.5
+          curve: smooth
+          group_by:
+            func: avg
+            duration: 1h
+          float_precision: 2
+          show:
+            legend_value: false
+        header:
+          show: false
+        yaxis:
+        - decimals: 2
+        card_mod:
+          style: "ha-card {\n  background: rgba(30,30,40,0.6);\n  border: 1px solid rgba(100,100,100,0.3);\n  border-radius: 16px;\n  backdrop-filter: blur(10px);\n}\n"
+    - type: vertical-stack
+      grid_options:
+        columns: full
+      cards:
+      - type: custom:mushroom-title-card
+        title: KM AL GIORNO, 30 GIORNI
+        subtitle: ''
+        card_mod:
+          style: "ha-card { padding: 12px 16px 8px 16px; }\n\nha-card .title {\n  margin: 0 !important;\n  font-size: 20px !important;\n  font-weight: 700 !important;\n  line-height: 1.1;\n  display: inline-flex;\n  align-items: center;\n  gap: 10px;\n  background: linear-gradient(90deg, #00bcd4, #26c6da, #00bcd4);\n  background-size: 200% auto;\n  -webkit-background-clip: text;\n  -webkit-text-fill-color: transparent;\n  animation: shine 3s linear infinite;\n}\n\nha-card .title::before {\n  content: \"\U0001F6E3️\";\n  font-size: 20px;\n  line-height: 1;\n  -webkit-text-fill-color: #00bcd4;\n  background: none !important;\n  filter: drop-shadow(0 0 8px rgba(0,188,212,0.75));\n}\n\nha-card .subtitle { display: none !important; }\n\nha-card::after {\n  content: \"\";\n  display: block;\n  width: 100%;\n  height: 4px;\n  margin-top: 10px;\n  border-radius: 999px;\n  background-image:\n    linear-gradient(90deg, rgba(0,188,212,0.30), rgba(38,198,218,0.30)),\n    linear-gradient(90deg,\n      transparent 0%,\n      rgba(0,188,212,0.00) 10%,\n      rgba(0,188,212,0.85) 28%,\n      rgba(38,198,218,0.95) 45%,\n      rgba(255,255,255,1.00) 50%,\n      rgba(38,198,218,0.95) 55%,\n      rgba(0,188,212,0.85) 72%,\n      rgba(0,188,212,0.00) 90%,\n      transparent 100%),\n    radial-gradient(circle,\n      rgba(255,255,255,1.00) 0%,\n      rgba(255,255,255,0.80) 30%,\n      rgba(0,188,212,0.50) 55%,\n      transparent 72%);\n  background-size: 100% 100%, 240% 100%, 24px 24px;\n  background-repeat: no-repeat;\n  background-position: 0% 0, 120% 0, -14px 50%;\n  animation: sweep-sec 2.7s ease-in-out infinite alternate;\n  will-change: background-position, opacity;\n  box-shadow:\n    0 0 14px rgba(0,188,212,0.70),\n    0 0 28px rgba(38,198,218,0.45),\n    0 0 4px rgba(255,255,255,0.30);\n  filter:\n    drop-shadow(0 0 8px rgba(255,255,255,0.25))\n    drop-shadow(0 0 14px rgba(0,188,212,0.30));\n  pointer-events: none;\n}\n\n@keyframes shine { to { background-position: 200% center; } }\n\n@keyframes sweep-sec {\n  0%   { background-position: 0% 0, 120% 0, -14px 50%; opacity: 0.70; }\n  50%  { opacity: 1; }\n  100% { background-position: 0% 0, -20% 0, calc(100% + 14px) 50%; opacity: 0.70; }\n}\n"
+      - type: custom:apexcharts-card
+        graph_span: 30d
+        apex_config:
+          chart:
+            height: 210
+            foreColor: '#c9cdd6'
+            fontFamily: inherit
+            toolbar:
+              show: false
+            zoom:
+              enabled: false
+            background: transparent
+          grid:
+            borderColor: rgba(255,255,255,0.07)
+            strokeDashArray: 0
+            xaxis:
+              lines:
+                show: false
+            padding:
+              left: 4
+              right: 8
+              top: -8
+          legend:
+            show: true
+            position: top
+            horizontalAlign: left
+            fontSize: 12px
+            markers:
+              width: 10
+              height: 10
+              radius: 10
+            itemMargin:
+              horizontal: 8
+          dataLabels:
+            enabled: false
+          tooltip:
+            theme: dark
+          xaxis:
+            axisBorder:
+              show: false
+            axisTicks:
+              show: false
+          plotOptions:
+            bar:
+              borderRadius: 5
+              borderRadiusApplication: end
+              columnWidth: 60%
+          fill:
+            type:
+            - gradient
+            gradient:
+              shade: dark
+              type: vertical
+              opacityFrom: 0.95
+              opacityTo: 0.55
+              stops:
+              - 0
+              - 100
+        series:
+        - entity: sensor.tesla_tele_contachilometri
+          name: km
+          type: column
+          color: '#0072B2'
+          statistics:
+            type: change
+            period: day
+            align: middle
+          show:
+            legend_value: false
+        header:
+          show: false
+        span:
+          end: day
+        card_mod:
+          style: "ha-card {\n  background: rgba(30,30,40,0.6);\n  border: 1px solid rgba(100,100,100,0.3);\n  border-radius: 16px;\n  backdrop-filter: blur(10px);\n}\n"

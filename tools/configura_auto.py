@@ -218,7 +218,7 @@ def verifica():
 
 
 def salva_scadenza(exp):
-    """La scadenza va in un input_datetime di HA, che ricorda di rimandare la configurazione (package)."""
+    """La scadenza va in un input_datetime di HA: l'add-on lo legge e ricorda di rimandare la configurazione."""
     if not SCADENZA_HELPER:
         print("scadenza non salvata in Home Assistant (expiry_helper vuoto): annotarla",
               datetime.fromtimestamp(exp).strftime("%d/%m/%Y"))

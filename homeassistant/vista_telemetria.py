@@ -1,12 +1,13 @@
-"""Vista "Telemetria Tesla" per Home Assistant, sui sensori creati da genera_package.py.
+"""Vista "Telemetria Tesla" per Home Assistant, sui sensori creati dall'add-on (scoperta MQTT).
 
 Uso:  python vista_telemetria.py [--prefisso tesla_tele_] [--senza-mappa] [--senza-avvisi] [--senza-stile]
                                  [--titolo "Telemetria Tesla"] [--uscita plancia_telemetria.yaml]
 Scrive una plancia (title + views) da incollare in una plancia nuova: Impostazioni, Plance, Aggiungi plancia, poi
-Modifica, Editor di configurazione testuale. Il prefisso deve essere lo stesso usato per il package.
+Modifica, Editor di configurazione testuale. Il prefisso deve essere lo stesso dell'opzione prefisso dell'add-on.
+Nel repository c'e' gia' plancia_telemetria.yaml, fatta con il prefisso predefinito tesla_tele_.
 
 Schede richieste (HACS): mushroom, apexcharts-card; card-mod per lo stile (con --senza-stile non serve).
---senza-avvisi: senza le righe della batteria 12V e dell'ultimo avviso (sensori dell'app AppDaemon telemetria_avvisi).
+--senza-avvisi: senza le righe della batteria 12V e dell'ultimo avviso.
 --senza-mappa: senza la mappa con la posizione dell'auto (per esempio per le foto da pubblicare).
 Colori per chi non distingue rosso e verde: blu, azzurro, arancio, viola (Okabe-Ito), mai rosso contro verde.
 """
@@ -130,6 +131,15 @@ def costruisci(px, mappa=True, avvisi=True, con_css=True, titolo="Telemetria Tes
              "mdi:lock", "{{ 'amber' if is_state('" + B + "serratura', 'on') else 'blue' }}"),
         riga(P + "porte_aperte", "Porte: " + val(P + "porte_aperte"), "Finestrini: " + val(P + "finestrini_aperti"),
              "mdi:car-door", "{{ 'amber' if states('" + P + "porte_aperte') not in ['Tutte chiuse', 'unknown', 'unavailable'] else 'teal' }}"),
+        riga(P + "sentinella_parcheggio",
+             "{% set s = states('" + P + "sentinella_parcheggio') %}{% set n = s | int(0) %}"
+             "{% set l = state_attr('" + P + "sentinella_parcheggio', 'allerte') | int(0) %}"
+             "Dal parcheggio: {{ (n ~ (' allarme' if n == 1 else ' allarmi')) if is_number(s) else '-' }}, "
+             "{{ l }} {{ 'allerta' if l == 1 else 'allerte' }}",
+             "{% set t = state_attr('" + P + "sentinella_parcheggio', 'parcheggiata_dalle') %}"
+             "{{ ('Parcheggiata alle ' ~ (as_timestamp(t) | timestamp_custom('%H:%M del %d/%m')) ~ ', ' ~ "
+             "(state_attr('" + P + "sentinella_parcheggio', 'dove') or '')) if t else 'Il conteggio riparte a ogni parcheggio (marcia in P)' }}",
+             "mdi:shield-car", "{{ 'orange' if states('" + P + "sentinella_parcheggio') | int(0) > 0 else 'blue' }}"),
         riga(B + "quattro_frecce", "Quattro frecce " + sino(B + "quattro_frecce", "accese", "spente"), "Schermo: " + val(P + "schermo"),
              "mdi:car-light-alert", "{{ 'orange' if is_state('" + B + "quattro_frecce', 'on') else 'grey' }}"),
     ]
@@ -201,6 +211,13 @@ def costruisci(px, mappa=True, avvisi=True, con_css=True, titolo="Telemetria Tes
         riga(P + "capacita_batteria", "Capacità " + val(P + "capacita_batteria", 1, " kWh"),
              "Carica al 100% completata " + sino(B + "carica_100") + " · riscaldamento " + sino(B + "riscaldamento_batteria", "acceso", "spento"),
              "mdi:battery-heart-variant", "teal"),
+        riga(P + "capacita_misurata",
+             "{% set s = states('" + P + "capacita_misurata') %}Capacità misurata alla ricarica: "
+             "{{ (s ~ ' kWh') if is_number(s) else 'nessuna ancora' }}",
+             "{% set e = state_attr('" + P + "capacita_misurata', 'ultima_esito') %}{% set d = state_attr('" + P + "capacita_misurata', 'ultima_data') %}"
+             "{{ ('Ultima ricarica: ' ~ e ~ ((' il ' ~ (as_timestamp(d) | timestamp_custom('%d/%m'))) if d else '')) if e "
+             "else 'Si misura a ogni ricarica di almeno 20 punti' }}",
+             "mdi:battery-check-outline", "teal"),
         riga(P + "temp_batteria_max", "Moduli da " + val(P + "temp_batteria_min", 0) + " a " + val(P + "temp_batteria_max", 0, " °C"),
              "Il freddo rallenta la carica: sotto i 10 °C l'auto scalda la batteria", "mdi:thermometer", "teal"),
         riga(P + "energia_caricata",
@@ -279,7 +296,7 @@ def costruisci(px, mappa=True, avvisi=True, con_css=True, titolo="Telemetria Tes
 def main():
     sys.stdout.reconfigure(encoding="utf-8")
     a = argparse.ArgumentParser(description="Plancia della Fleet Telemetry Tesla")
-    a.add_argument("--prefisso", default="tesla_tele_", help="lo stesso di genera_package.py (predefinito tesla_tele_)")
+    a.add_argument("--prefisso", default="tesla_tele_", help="lo stesso dell'opzione prefisso dell'add-on (predefinito tesla_tele_)")
     a.add_argument("--titolo", default="Telemetria Tesla")
     a.add_argument("--senza-mappa", action="store_true")
     a.add_argument("--senza-avvisi", action="store_true")
@@ -288,7 +305,7 @@ def main():
     x = a.parse_args()
     px = x.prefisso if x.prefisso.endswith("_") else x.prefisso + "_"
     if not re.fullmatch(r"[a-z0-9_]+", px):
-        raise SystemExit("--prefisso: solo lettere minuscole, cifre e _ (lo stesso usato per genera_package.py)")
+        raise SystemExit("--prefisso: solo lettere minuscole, cifre e _ (lo stesso dell'opzione prefisso dell'add-on)")
     v = costruisci(px, mappa=not x.senza_mappa, avvisi=not x.senza_avvisi, con_css=not x.senza_stile, titolo=x.titolo)
     testo = yaml.safe_dump({"title": x.titolo, "views": [v]}, allow_unicode=True, sort_keys=False, width=4000, default_flow_style=False)
     Path(x.uscita).write_text(testo, encoding="utf-8", newline="\n")

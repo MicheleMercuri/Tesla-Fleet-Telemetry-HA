@@ -1,7 +1,7 @@
 name: "Telemetria Tesla (non ufficiale)"
-version: "0.10.0-2"
+version: "0.10.0-3"
 slug: "telemetria_tesla"
-description: "Server Tesla fleet-telemetry v0.10.0 (immagine ufficiale fissata per digest). Riceve lo stream mTLS dei veicoli su 4443/tcp e pubblica su MQTT i record V, alerts, errors e connectivity in telemetria_tesla/<VIN>/. Non ufficiale, non affiliato a Tesla, Inc."
+description: "Beta. Server Tesla fleet-telemetry v0.10.0 (immagine ufficiale fissata per digest) con scoperta automatica delle entita' in Home Assistant (MQTT discovery) e avvisi. Riceve lo stream mTLS dei veicoli su 4443/tcp e pubblica su MQTT in telemetria_tesla/<VIN>/. Non ufficiale, non affiliato a Tesla, Inc."
 url: "https://github.com/MicheleMercuri/Tesla-Fleet-Telemetry-HA"
 arch:
   - amd64
@@ -9,6 +9,11 @@ startup: application
 boot: auto
 init: false
 host_network: false
+# la scoperta usa default_entity_id (Home Assistant 2025.10 o successivo)
+homeassistant: "2025.10.0"
+# token di Home Assistant solo per lo scopritore (notifiche, registro, zona di casa): il server esposto su internet gira
+# senza token e senza privilegi
+homeassistant_api: true
 # credenziali MQTT date dal Supervisor (utente "addons" di Mosquitto): nessuna password scritta a mano
 services:
   - "mqtt:need"
@@ -28,7 +33,41 @@ map:
 options:
   log_level: info
   nascondi_errori_handshake: false
+  discovery: true
+  prefisso: "tesla_tele_"
+  nome: "Tesla Telemetria"
+  avvisi_sentinella: true
+  avviso_chiave_nuova: true
+  avvisi_schermo: true
+  ore_senza_dati: 0
+  misura_capacita: true
+  conteggio_parcheggio: true
+  togli: false
 schema:
   log_level: list(trace|debug|info|warn|error)
   # i primi giorni restano visibili: un errore TLS dell'auto si vede nel log. Poi si puo' accendere contro gli scanner.
   nascondi_errori_handshake: bool
+  # entita' create in HA dallo scopritore (MQTT discovery): prefisso degli entity_id, nome del dispositivo
+  discovery: bool
+  prefisso: 'match(^[a-z0-9_]+$)'
+  nome: str
+  id_dispositivo: 'match(^[A-Za-z0-9_-]+$)?'
+  modello: "str?"
+  vin: 'match(^[A-HJ-NPR-Z0-9]{17}$)?'
+  # notifiche: un servizio di HA (per esempio notify.mobile_app_telefono o telegram_bot.send_message) e dati in piu' in JSON
+  notifica: 'match(^[a-z0-9_]+\.[a-z0-9_]+$)?'
+  notifica_dati: "str?"
+  avvisi_sentinella: bool
+  avviso_chiave_nuova: bool
+  avvisi_schermo: bool
+  # vuota: si legge input_datetime.telemetria_tesla_scadenza, scritta da tools/configura_auto.py; oppure una data o un'entita'
+  scadenza_configurazione: "str?"
+  contachilometri_confronto: "str?"
+  ore_senza_dati: "int(0,720)"
+  entita_pausa_carica: "str?"
+  misura_capacita: bool
+  contatore_wallbox: "str?"
+  conteggio_parcheggio: bool
+  # togli: toglie da HA le entita' del prefisso, solo se conferma_togli e' uguale al prefisso
+  togli: bool
+  conferma_togli: "str?"
