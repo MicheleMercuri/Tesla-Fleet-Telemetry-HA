@@ -172,10 +172,10 @@ with tempfile.TemporaryDirectory() as tmp:
     n = len(pub)
     v(s, "PackVoltage", 350.0)
     esito("potenza: con la sola tensione niente", not [p for p in pub[n:] if p[0].endswith("/potenza_batteria")])
-    v(s, "PackCurrent", 20.0)
-    esito("potenza: 350 V per 20 A = 7 kW", ultimo(pub, s, "potenza_batteria")["stato"] == 7.0, ultimo(pub, s, "potenza_batteria"))
-    v(s, "PackCurrent", -40.0)
-    esito("potenza: corrente negativa (frenata o carica) col segno dell'auto", ultimo(pub, s, "potenza_batteria")["stato"] == -14.0)
+    v(s, "PackCurrent", -20.0)
+    esito("potenza: scarica (corrente -20 A dall'auto) = +7 kW", ultimo(pub, s, "potenza_batteria")["stato"] == 7.0, ultimo(pub, s, "potenza_batteria"))
+    v(s, "PackCurrent", 40.0)
+    esito("potenza: frenata o carica (corrente +40 A) = -14 kW", ultimo(pub, s, "potenza_batteria")["stato"] == -14.0)
     conf = {i: c for comp, i, c in s.configurazioni()}
     esito("potenza: entita' in kW con disponibilita'", conf["potenza_batteria"]["unit_of_measurement"] == "kW"
           and conf["potenza_batteria"].get("availability_topic") and "tensione_batteria" in conf and "corrente_batteria" in conf)

@@ -5,7 +5,7 @@ server in an add-on that also creates every entity by itself (MQTT discovery), c
 battery capacity at each charge and sends notifications. A ready-made dashboard is included. No YAML package, no
 AppDaemon app.
 
-> **Beta (0.10.0-5).** This is a test release that comes before 1.0. It is provided as is, without warranty of any
+> **Beta (0.10.0-6).** This is a test release that comes before 1.0. It is provided as is, without warranty of any
 > kind (MIT license): use it at your own risk. Please report problems as GitHub issues (see
 > [Reporting a problem](#reporting-a-problem)). Tested on a Model 3 with Home Assistant OS 2026.11 on amd64. Entity
 > names, dashboard texts, notifications and alert translations are in Italian for now.

@@ -38,7 +38,7 @@ import tabelle
 from ha_api import HA, NonRisponde, dettaglio
 
 QUI = Path(__file__).resolve().parent
-VERSIONE = "0.3.2"
+VERSIONE = "0.3.3"
 VIN_RE = re.compile(r"^[A-HJ-NPR-Z0-9]{17}$")
 PORTE = {"DriverFront": "Guida", "DriverRear": "Post. guida", "PassengerFront": "Passeggero", "PassengerRear": "Post. passeggero",
          "TrunkFront": "Frunk", "TrunkRear": "Bagagliaio"}
@@ -507,12 +507,14 @@ class Scopritore:
         return self.ultima_posizione
 
     def pubblica_potenza(self):
-        """Potenza della batteria in kW, tensione per corrente: in marcia, in frenata e in carica (il segno e' quello
-        della corrente mandata dall'auto). Senza tutti e due i valori non si pubblica niente."""
+        """Potenza della batteria in kW, tensione per corrente: positiva quando la batteria si scarica (marcia, consumi a
+        auto ferma), negativa quando si carica (frenata, ricarica), come nel pannello Energia di HA. L'auto manda la
+        corrente negativa in scarica (visto il 18/11/2026: -44 kW in accelerazione, +28 in frenata), da qui il meno.
+        Senza tutti e due i valori non si pubblica niente."""
         if not all(k in self.ultimi for k in POTENZA):
             return
         v, i = numero(self.ultimi.get("PackVoltage")), numero(self.ultimi.get("PackCurrent"))
-        self.pubblica_derivato("potenza_batteria", {"stato": round(v * i / 1000, 2) if v is not None and i is not None else None})
+        self.pubblica_derivato("potenza_batteria", {"stato": round(-v * i / 1000, 2) + 0.0 if v is not None and i is not None else None})
 
     def a_casa(self):
         """Prima la posizione GPS dentro la zona home di HA; solo se mancano la posizione o la zona, "A casa" dell'auto

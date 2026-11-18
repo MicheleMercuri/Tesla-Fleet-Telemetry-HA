@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.10.0-6 (beta)
+
+- Battery power sign: positive while the battery discharges (driving, consumption with the car parked), negative while
+  it charges (regenerative braking, charging), as in the Home Assistant Energy dashboard. The car sends the current
+  negative while discharging.
+
 ## 0.10.0-5 (beta)
 
 - Battery power: new entities `tensione_batteria` (V), `corrente_batteria` (A) and the derived `potenza_batteria` (kW,
