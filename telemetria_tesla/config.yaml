@@ -1,5 +1,5 @@
 name: "Telemetria Tesla"
-version: "0.10.0-4"
+version: "0.10.0-5"
 slug: "telemetria_tesla"
 description: "Beta. Server Tesla fleet-telemetry v0.10.0 (immagine ufficiale fissata per digest) con scoperta automatica delle entita' in Home Assistant (MQTT discovery) e avvisi. Riceve lo stream mTLS dei veicoli su 4443/tcp e pubblica su MQTT in telemetria_tesla/<VIN>/. Non ufficiale, non affiliato a Tesla, Inc."
 url: "https://github.com/MicheleMercuri/Tesla-Fleet-Telemetry-HA"
@@ -42,6 +42,7 @@ options:
   ore_senza_dati: 0
   misura_capacita: true
   conteggio_parcheggio: true
+  registro: true
   togli: false
 schema:
   log_level: list(trace|debug|info|warn|error)
@@ -68,6 +69,8 @@ schema:
   misura_capacita: bool
   contatore_wallbox: "str?"
   conteggio_parcheggio: bool
+  # avvisi ed errori nel registro (logbook) di HA
+  registro: bool
   # togli: toglie da HA le entita' del prefisso, solo se conferma_togli e' uguale al prefisso
   togli: bool
   conferma_togli: "str?"

@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.10.0-5 (beta)
+
+- Battery power: new entities `tensione_batteria` (V), `corrente_batteria` (A) and the derived `potenza_batteria` (kW,
+  voltage times current: driving, regenerative braking and charging, with the sign of the current sent by the car).
+  They need `PackVoltage` and `PackCurrent` in the car configuration: run `tools/configura_auto.py` again.
+- `tools/configura_auto.py`: `Location` every 15 s instead of 60 (arrival home recognised sooner), `PackVoltage` and
+  `PackCurrent` every 10 s.
+- New option `registro` (default on): on-screen alerts, returns and telemetry errors in the Home Assistant logbook.
+  Turn it off only if another part of Home Assistant already writes them.
+
 ## 0.10.0-4 (beta)
 
 - "At home" / "away from home" now comes first from the GPS position inside Home Assistant's home zone. The car's own

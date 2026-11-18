@@ -5,7 +5,7 @@ server in an add-on that also creates every entity by itself (MQTT discovery), c
 battery capacity at each charge and sends notifications. A ready-made dashboard is included. No YAML package, no
 AppDaemon app.
 
-> **Beta (0.10.0-3).** This is a test release that comes before 1.0. It is provided as is, without warranty of any
+> **Beta (0.10.0-5).** This is a test release that comes before 1.0. It is provided as is, without warranty of any
 > kind (MIT license): use it at your own risk. Please report problems as GitHub issues (see
 > [Reporting a problem](#reporting-a-problem)). Tested on a Model 3 with Home Assistant OS 2026.11 on amd64. Entity
 > names, dashboard texts, notifications and alert translations are in Italian for now.
@@ -24,8 +24,8 @@ AppDaemon app.
 - **About 90 entities created automatically** on one device: Sentry Mode, doors, windows, lock, hazard lights, gear,
   driver seat, location, navigation (minutes, km and battery % at arrival, traffic delay, distance of the destination
   from home, "navigating home"), charging (state, power, current, phases, port, latch, schedule), battery (level, energy,
-  BMS capacity, module temperatures, heater), climate and seats, tyre pressures and warnings, lifetime counters, software
-  version.
+  power while driving, BMS capacity, module temperatures, heater), climate and seats, tyre pressures and warnings,
+  lifetime counters, software version.
 - **Derived values** computed by the add-on: doors and windows open, last Sentry alarm and alert with where it happened,
   last on-screen alert, 12 V battery diagnosis, last telemetry error, Sentry events since parking, battery capacity
   measured at each charge (car firmware 2026.32 or later; with charging losses at home if you have a wallbox energy

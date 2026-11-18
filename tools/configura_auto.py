@@ -50,12 +50,14 @@ CAMPI = {
     "PairedPhoneKeyAndKeyFobQty": 300, "CenterDisplay": 10,
     # posizione e navigazione: senza percorso MinutesToArrival arriva null; la % all'arrivo arriva null mentre l'auto
     # calcola il percorso (con un intervallo lungo resterebbe vuota a lungo)
-    "LocatedAtHome": 10, "LocatedAtWork": 10, "Location": 60,
+    "LocatedAtHome": 10, "LocatedAtWork": 10, "Location": 15,
     "DestinationName": 30, "DestinationLocation": 30, "MinutesToArrival": 30, "MilesToArrival": 30,
     "ExpectedEnergyPercentAtTripArrival": 30, "RouteTrafficMinutesDelay": 30,
     # ricarica
     "ChargePortDoorOpen": 5, "ChargePortLatch": 5, "DetailedChargeState": 10, "ChargeEnableRequest": 5,
     "BatteryLevel": 60, "Soc": 60, "EnergyRemaining": 60, "ChargeLimitSoc": 60,
+    # 18/11: potenza della batteria (tensione per corrente) in marcia, in frenata e in carica
+    "PackVoltage": 10, "PackCurrent": 10,
     "ACChargingPower": 30, "DCChargingPower": 30, "ChargeAmps": 30,
     "ChargeCurrentRequest": 5, "ChargeCurrentRequestMax": 60, "ChargerPhases": 60,
     # ScheduledDepartureTime non c'e': un'auto con il firmware 2026.38.6 risponde unsupported_field

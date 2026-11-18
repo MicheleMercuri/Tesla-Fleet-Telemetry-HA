@@ -53,6 +53,7 @@ i valori derivati risultano non disponibili.
 | `entita_pausa_carica` | facoltativo, entita' separate da virgole: accese ora o negli ultimi 3 minuti vogliono dire "carica fermata apposta" (per esempio un rele' che stacca la wallbox), e la "corrente mancata" va solo nel registro |
 | `misura_capacita` | capacita' della batteria misurata a ogni ricarica di almeno 20 punti (kWh entrati / punti * 100, meno l'energia usata a cavo attaccato). Serve il firmware dell'auto 2026.32 o successivo (contatore dell'energia caricata): prima ogni misura risulta "dati non validi" |
 | `contatore_wallbox` | facoltativo: contatore di energia della wallbox (kWh, Wh o MWh), per le perdite di ricarica a casa |
+| `registro` | avvisi dello schermo, rientri ed errori della telemetria nel registro (logbook) di HA (predefinito acceso). Da spegnere solo se un'altra parte di HA li scrive gia' |
 | `conteggio_parcheggio` | allarmi e allerte della Sentinella dall'ultimo parcheggio (marcia in P) |
 | `togli`, `conferma_togli` | toglie da HA tutte le entita' del prefisso (anche dal registro delle entita'), solo se `conferma_togli` e' uguale al prefisso (con o senza il `_` finale); poi spegnere `togli` per ricrearle. Da fare anche prima di disinstallare l'add-on: le configurazioni restano in Mosquitto e le entita' in HA |
 

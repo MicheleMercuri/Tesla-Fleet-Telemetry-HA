@@ -77,6 +77,8 @@ NUMERI = [
     ("BatteryLevel", "batteria", "Batteria", "%", "battery", "measurement", 2, 1.0, None),
     ("Soc", "batteria_utilizzabile", "Batteria utilizzabile", "%", "battery", "measurement", 1, 1.0, None),
     ("EnergyRemaining", "energia_batteria", "Energia nella batteria", "kWh", "energy_storage", "measurement", 1, 1.0, None),
+    ("PackVoltage", "tensione_batteria", "Tensione della batteria", "V", "voltage", "measurement", 1, 1.0, None),
+    ("PackCurrent", "corrente_batteria", "Corrente della batteria", "A", "current", "measurement", 1, 1.0, None),
     ("NominalFullPackEnergyKwh", "capacita_batteria", "Capacità della batteria", "kWh", "energy_storage", "measurement", 1, 1.0, "mdi:battery-heart-variant"),
     ("ChargeLimitSoc", "limite_carica", "Limite di carica", "%", None, "measurement", 0, 1.0, "mdi:battery-arrow-up"),
     ("ACChargingPower", "potenza_ac", "Potenza di carica AC", "kW", "power", "measurement", 1, 1.0, None),

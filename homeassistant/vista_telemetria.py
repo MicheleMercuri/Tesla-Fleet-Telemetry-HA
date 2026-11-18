@@ -214,6 +214,10 @@ def costruisci(px, mappa=True, avvisi=True, con_css=True, titolo="Telemetria Tes
         riga(P + "capacita_batteria", "Capacità " + val(P + "capacita_batteria", 1, " kWh"),
              "Carica al 100% completata " + sino(B + "carica_100") + " · riscaldamento " + sino(B + "riscaldamento_batteria", "acceso", "spento"),
              "mdi:battery-heart-variant", "teal"),
+        # 18/11: potenza della batteria (tensione per corrente, dalla telemetria): in marcia, in frenata e in carica
+        riga(P + "potenza_batteria", "Potenza della batteria " + val(P + "potenza_batteria", 1, " kW"),
+             "Tensione " + val(P + "tensione_batteria", 0, " V") + " · corrente " + val(P + "corrente_batteria", 0, " A"),
+             "mdi:flash", "teal"),
         riga(P + "capacita_misurata",
              "{% set s = states('" + P + "capacita_misurata') %}Capacità misurata alla ricarica: "
              "{{ (s ~ ' kWh') if is_number(s) else 'nessuna ancora' }}",

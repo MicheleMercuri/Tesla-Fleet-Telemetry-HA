@@ -20,7 +20,7 @@ Impostazioni da variabili d'ambiente (le mette run.sh dalle opzioni dell'add-on 
 MQTT_HOST, MQTT_PORT, MQTT_USER, MQTT_PASS, TOPIC_BASE, DISCOVERY_PREFIX, PREFISSO, NOME, ID_DISPOSITIVO, MODELLO, VIN,
 FILE_STATO, TOGLI e CONFERMA_TOGLI; NOTIFICA (dominio.servizio), NOTIFICA_DATI (JSON), AVVISI_SENTINELLA,
 AVVISO_CHIAVE_NUOVA, AVVISI_SCHERMO, SCADENZA_CONFIGURAZIONE (AAAA-MM-GG), CONTACHILOMETRI_CONFRONTO, ORE_SENZA_DATI,
-ENTITA_PAUSA_CARICA (elenco separato da virgole), MISURA_CAPACITA, CONTATORE_WALLBOX, CONTEGGIO_PARCHEGGIO;
+ENTITA_PAUSA_CARICA (elenco separato da virgole), MISURA_CAPACITA, CONTATORE_WALLBOX, CONTEGGIO_PARCHEGGIO, REGISTRO;
 SUPERVISOR_TOKEN (dal Supervisor) per parlare con HA.
 """
 import json
@@ -38,7 +38,7 @@ import tabelle
 from ha_api import HA, NonRisponde, dettaglio
 
 QUI = Path(__file__).resolve().parent
-VERSIONE = "0.3.1"
+VERSIONE = "0.3.2"
 VIN_RE = re.compile(r"^[A-HJ-NPR-Z0-9]{17}$")
 PORTE = {"DriverFront": "Guida", "DriverRear": "Post. guida", "PassengerFront": "Passeggero", "PassengerRear": "Post. passeggero",
          "TrunkFront": "Frunk", "TrunkRear": "Bagagliaio"}
@@ -57,8 +57,9 @@ ATTESE_NOTIFICA = (20, 60, 120)  # una notifica non riuscita si riprova dopo 20 
 OPZIONI_NON_VALIDE = 78    # codice di uscita per opzioni sbagliate: run.sh non fa ripartire lo scopritore
 ENTITA_SCADENZA = "input_datetime.telemetria_tesla_scadenza"  # la scrive tools/configura_auto.py quando l'auto accetta la configurazione
 DERIVATI = ("porte_aperte", "finestrini_aperti", "navigazione", "ultimo_allarme", "ultima_allerta", "ultimo_avviso", "batteria_12v",
-            "ultimo_errore", "sentinella_parcheggio", "capacita_misurata")
+            "ultimo_errore", "sentinella_parcheggio", "capacita_misurata", "potenza_batteria")
 NAVIGAZIONE = ("MinutesToArrival", "DestinationLocation")
+POTENZA = ("PackVoltage", "PackCurrent")  # potenza della batteria = tensione per corrente
 ORIGINE = {"name": "Telemetria Tesla", "sw_version": VERSIONE, "support_url": "https://github.com/MicheleMercuri/Tesla-Fleet-Telemetry-HA"}
 
 
@@ -179,6 +180,8 @@ class Scopritore:
         self.misura_capacita = bool(opzioni.get("misura_capacita", False))
         self.contatore_wallbox = (opzioni.get("contatore_wallbox") or "").strip()
         self.conteggio_parcheggio = bool(opzioni.get("conteggio_parcheggio", False))
+        # avvisi, rientri ed errori nel registro (logbook) di HA; spento se un'altra parte di HA li scrive gia'
+        self.scrivi_registro = bool(opzioni.get("registro", True))
         self.stato = self.carica()
         vin = (opzioni.get("vin") or "").strip().upper()
         if vin and not VIN_RE.match(vin):
@@ -306,6 +309,9 @@ class Scopritore:
                                           "json_attributes_topic": d("ultimo_errore"),
                                           "json_attributes_template": "{{ {'quando': value_json.quando} | tojson }}",
                                           "icon": "mdi:alert-circle-outline"}),
+            ("sensor", "potenza_batteria", {"name": "Potenza della batteria", "state_topic": d("potenza_batteria"),
+                                             "value_template": json_stato, "unit_of_measurement": "kW", "device_class": "power",
+                                             "state_class": "measurement", "suggested_display_precision": 1, "icon": "mdi:flash"}),
         ]
         if self.conteggio_parcheggio or tutte:
             derivati.append(("sensor", "sentinella_parcheggio", {
@@ -461,6 +467,8 @@ class Scopritore:
             self.chiudi_sessione()  # e' arrivato il valore finale atteso allo stacco del cavo
         if nome in NAVIGAZIONE:
             self.pubblica_navigazione()
+        elif nome in POTENZA:
+            self.pubblica_potenza()
 
     def pubblica_porte(self, v):
         if isinstance(v, dict):
@@ -497,6 +505,14 @@ class Scopritore:
         if c is not None:
             self.ultima_posizione = c
         return self.ultima_posizione
+
+    def pubblica_potenza(self):
+        """Potenza della batteria in kW, tensione per corrente: in marcia, in frenata e in carica (il segno e' quello
+        della corrente mandata dall'auto). Senza tutti e due i valori non si pubblica niente."""
+        if not all(k in self.ultimi for k in POTENZA):
+            return
+        v, i = numero(self.ultimi.get("PackVoltage")), numero(self.ultimi.get("PackCurrent"))
+        self.pubblica_derivato("potenza_batteria", {"stato": round(v * i / 1000, 2) if v is not None and i is not None else None})
 
     def a_casa(self):
         """Prima la posizione GPS dentro la zona home di HA; solo se mancano la posizione o la zona, "A casa" dell'auto
@@ -875,6 +891,8 @@ class Scopritore:
         self.ha.in_coda(manda, notifica=True)
 
     def registro(self, testo):
+        if not self.scrivi_registro:
+            return
         nome = self.nome
         self.ha.in_coda(lambda ha: ha.servizio("logbook.log", {"name": nome, "message": testo[:500]}))
 
@@ -1034,7 +1052,7 @@ def opzioni_da_ambiente():
             "contachilometri_confronto": vuoto_se_null(os.environ.get("CONTACHILOMETRI_CONFRONTO")), "ore_senza_dati": ore,
             "entita_pausa_carica": [e for e in vuoto_se_null(os.environ.get("ENTITA_PAUSA_CARICA")).split(",") if e.strip()],
             "misura_capacita": si("MISURA_CAPACITA"), "contatore_wallbox": vuoto_se_null(os.environ.get("CONTATORE_WALLBOX")),
-            "conteggio_parcheggio": si("CONTEGGIO_PARCHEGGIO")}
+            "conteggio_parcheggio": si("CONTEGGIO_PARCHEGGIO"), "registro": si("REGISTRO", True)}
 
 
 def main():

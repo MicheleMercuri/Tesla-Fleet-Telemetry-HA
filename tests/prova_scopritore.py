@@ -122,7 +122,7 @@ with tempfile.TemporaryDirectory() as tmp:
     # 1) scoperta e disponibilita'
     s.collegato()
     conf = [(t, json.loads(p)) for t, p, r in pub if t.endswith("/config") and p]
-    attese = len(tabelle.NUMERI) + len(tabelle.ENUM) + len(tabelle.TESTI) + 2 + len(tabelle.BINARI) + 1 + 1 + 8 + 2
+    attese = len(tabelle.NUMERI) + len(tabelle.ENUM) + len(tabelle.TESTI) + 2 + len(tabelle.BINARI) + 1 + 1 + 9 + 2  # 9 derivati fissi (dal 18/11 anche la potenza)
     esito(f"scoperta: {len(conf)} entita' con capacita' e parcheggio accesi", len(conf) == attese, f"attese {attese}")
     der = [x for _, x in conf if x["state_topic" if "state_topic" in x else "json_attributes_topic"].startswith(f"telemetria_tesla/{VIN}/derivati/")]
     esito("valori derivati con la disponibilita' dello scopritore", der and all(x.get("availability_topic") == s.disponibile for _, x in conf
@@ -157,6 +157,28 @@ with tempfile.TemporaryDirectory() as tmp:
     esito("Location 0,0: resta l'ultima posizione valida", not s.a_casa() and s.link_posizione() is not None)
     v(s, "Location", {"latitude": ALTROVE[0], "longitude": ALTROVE[1]}, True)
     v(s, "LocatedAtHome", False, True)
+
+    # 3a) registro di HA: acceso di norma, spento con l'opzione registro
+    n = len(ha.chiamate)
+    s.registro("prova del registro")
+    esito("registro acceso: una riga nel logbook", registro(ha, n) == ["prova del registro"], registro(ha, n))
+    s.scrivi_registro = False
+    n = len(ha.chiamate)
+    s.registro("non deve comparire")
+    esito("registro spento: niente nel logbook", registro(ha, n) == [])
+    s.scrivi_registro = True
+
+    # 3b) potenza della batteria: tensione per corrente, solo con tutti e due i valori
+    n = len(pub)
+    v(s, "PackVoltage", 350.0)
+    esito("potenza: con la sola tensione niente", not [p for p in pub[n:] if p[0].endswith("/potenza_batteria")])
+    v(s, "PackCurrent", 20.0)
+    esito("potenza: 350 V per 20 A = 7 kW", ultimo(pub, s, "potenza_batteria")["stato"] == 7.0, ultimo(pub, s, "potenza_batteria"))
+    v(s, "PackCurrent", -40.0)
+    esito("potenza: corrente negativa (frenata o carica) col segno dell'auto", ultimo(pub, s, "potenza_batteria")["stato"] == -14.0)
+    conf = {i: c for comp, i, c in s.configurazioni()}
+    esito("potenza: entita' in kW con disponibilita'", conf["potenza_batteria"]["unit_of_measurement"] == "kW"
+          and conf["potenza_batteria"].get("availability_topic") and "tensione_batteria" in conf and "corrente_batteria" in conf)
 
     # 4) marcia: parcheggio azzera il conteggio; il valore conservato uguale non conta
     v(s, "Gear", "ShiftStateD")

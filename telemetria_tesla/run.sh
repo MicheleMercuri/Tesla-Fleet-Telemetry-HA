@@ -39,7 +39,7 @@ if bashio::config.true 'discovery' || bashio::config.true 'togli'; then
             fi
         done
         for coppia in avvisi_sentinella:AVVISI_SENTINELLA avviso_chiave_nuova:AVVISO_CHIAVE_NUOVA avvisi_schermo:AVVISI_SCHERMO \
-                      misura_capacita:MISURA_CAPACITA conteggio_parcheggio:CONTEGGIO_PARCHEGGIO; do
+                      misura_capacita:MISURA_CAPACITA conteggio_parcheggio:CONTEGGIO_PARCHEGGIO registro:REGISTRO; do
             if bashio::config.true "${coppia%%:*}"; then export "${coppia##*:}=true"; else export "${coppia##*:}=false"; fi
         done
         if bashio::config.true 'togli'; then

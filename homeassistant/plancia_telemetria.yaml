@@ -528,6 +528,19 @@ views:
         card_mod:
           style: "ha-card {\n  background: rgba(30,30,40,0.6);\n  border: 1px solid rgba(100,100,100,0.3);\n  border-radius: 16px;\n  backdrop-filter: blur(10px);\n}\n"
       - type: custom:mushroom-template-card
+        entity: sensor.tesla_tele_potenza_batteria
+        primary: Potenza della batteria {% set s = states('sensor.tesla_tele_potenza_batteria') %}{{ (s | float | round(1)) | string | replace('.', ',') if is_number(s) else '-' }} kW
+        secondary: Tensione {% set s = states('sensor.tesla_tele_tensione_batteria') %}{{ (s | float | round(0)) | string | replace('.', ',') if is_number(s) else '-' }} V · corrente {% set s = states('sensor.tesla_tele_corrente_batteria') %}{{ (s | float | round(0)) | string | replace('.', ',') if is_number(s) else '-' }} A
+        icon: mdi:flash
+        color: teal
+        multiline_secondary: true
+        tap_action:
+          action: more-info
+        hold_action:
+          action: more-info
+        card_mod:
+          style: "ha-card {\n  background: rgba(30,30,40,0.6);\n  border: 1px solid rgba(100,100,100,0.3);\n  border-radius: 16px;\n  backdrop-filter: blur(10px);\n}\n"
+      - type: custom:mushroom-template-card
         entity: sensor.tesla_tele_capacita_misurata
         primary: '{% set s = states(''sensor.tesla_tele_capacita_misurata'') %}Capacità misurata alla ricarica: {{ (s ~ '' kWh'') if is_number(s) else ''nessuna ancora'' }}'
         secondary: '{% set e = state_attr(''sensor.tesla_tele_capacita_misurata'', ''ultima_esito'') %}{% set d = state_attr(''sensor.tesla_tele_capacita_misurata'', ''ultima_data'') %}{{ (''Ultima ricarica: '' ~ e ~ (('' il '' ~ (as_timestamp(d) | timestamp_custom(''%d/%m''))) if d else '''')) if e else ''Si misura a ogni ricarica di almeno 20 punti'' }}'
