@@ -556,7 +556,7 @@ views:
       - type: custom:mushroom-template-card
         entity: sensor.tesla_tele_temp_batteria_max
         primary: Moduli da {% set s = states('sensor.tesla_tele_temp_batteria_min') %}{{ (s | float | round(0)) | string | replace('.', ',') if is_number(s) else '-' }} a {% set s = states('sensor.tesla_tele_temp_batteria_max') %}{{ (s | float | round(0)) | string | replace('.', ',') if is_number(s) else '-' }} °C
-        secondary: '{% set a = states(''sensor.tesla_tele_modulo_piu_freddo'') %}{% set b = states(''sensor.tesla_tele_modulo_piu_caldo'') %}{% if is_number(a) and is_number(b) %}Più freddo il modulo {{ a | int }}, più caldo il {{ b | int }} · {% endif %}Il freddo rallenta la carica: sotto i 10 °C l''auto scalda la batteria'
+        secondary: '{% set a = states(''sensor.tesla_tele_modulo_piu_freddo'') %}{% set b = states(''sensor.tesla_tele_modulo_piu_caldo'') %}{% if is_number(a) and is_number(b) %}Modulo più freddo n. {{ a | int }}, più caldo n. {{ b | int }} · {% endif %}Il freddo rallenta la carica: sotto i 10 °C l''auto scalda la batteria'
         icon: mdi:thermometer
         color: teal
         multiline_secondary: true
@@ -569,7 +569,7 @@ views:
       - type: custom:mushroom-template-card
         entity: sensor.tesla_tele_squilibrio_celle
         primary: Celle da {% set s = states('sensor.tesla_tele_tensione_cella_min') %}{{ (s | float | round(3)) | string | replace('.', ',') if is_number(s) else '-' }} a {% set s = states('sensor.tesla_tele_tensione_cella_max') %}{{ (s | float | round(3)) | string | replace('.', ',') if is_number(s) else '-' }} V · squilibrio {% set s = states('sensor.tesla_tele_squilibrio_celle') %}{{ (s | float | round(0)) | string | replace('.', ',') if is_number(s) else '-' }} mV
-        secondary: '{% set a = states(''sensor.tesla_tele_cella_tensione_min'') %}{% set b = states(''sensor.tesla_tele_cella_tensione_max'') %}{% if is_number(a) and is_number(b) %}Più bassa la cella {{ a | int }}, più alta la {{ b | int }} · {% endif %}Da confrontare a batteria piena: se cresce nel tempo le celle si sbilanciano'
+        secondary: '{% set a = states(''sensor.tesla_tele_cella_tensione_min'') %}{% set b = states(''sensor.tesla_tele_cella_tensione_max'') %}{% if is_number(a) and is_number(b) %}Cella più bassa n. {{ a | int }}, più alta n. {{ b | int }} · {% endif %}Da confrontare a batteria piena: se cresce nel tempo le celle si sbilanciano'
         icon: mdi:scale-unbalanced
         color: teal
         multiline_secondary: true

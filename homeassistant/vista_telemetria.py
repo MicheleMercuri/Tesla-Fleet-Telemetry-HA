@@ -227,13 +227,13 @@ def costruisci(px, mappa=True, avvisi=True, con_css=True, titolo="Telemetria Tes
              "mdi:battery-check-outline", "teal"),
         riga(P + "temp_batteria_max", "Moduli da " + val(P + "temp_batteria_min", 0) + " a " + val(P + "temp_batteria_max", 0, " °C"),
              "{% set a = states('" + P + "modulo_piu_freddo') %}{% set b = states('" + P + "modulo_piu_caldo') %}"
-             "{% if is_number(a) and is_number(b) %}Più freddo il modulo {{ a | int }}, più caldo il {{ b | int }} · {% endif %}"
+             "{% if is_number(a) and is_number(b) %}Modulo più freddo n. {{ a | int }}, più caldo n. {{ b | int }} · {% endif %}"
              "Il freddo rallenta la carica: sotto i 10 °C l'auto scalda la batteria", "mdi:thermometer", "teal"),
         # 21/11: celle della batteria (BrickVoltageMin/Max): lo squilibrio va confrontato a batteria piena, nel tempo
         riga(P + "squilibrio_celle", "Celle da " + val(P + "tensione_cella_min", 3) + " a " + val(P + "tensione_cella_max", 3, " V") +
              " · squilibrio " + val(P + "squilibrio_celle", 0, " mV"),
              "{% set a = states('" + P + "cella_tensione_min') %}{% set b = states('" + P + "cella_tensione_max') %}"
-             "{% if is_number(a) and is_number(b) %}Più bassa la cella {{ a | int }}, più alta la {{ b | int }} · {% endif %}"
+             "{% if is_number(a) and is_number(b) %}Cella più bassa n. {{ a | int }}, più alta n. {{ b | int }} · {% endif %}"
              "Da confrontare a batteria piena: se cresce nel tempo le celle si sbilanciano", "mdi:scale-unbalanced", "teal"),
         riga(P + "energia_caricata",
              "Caricati " + migliaia(P + "energia_caricata") + " · usati " + migliaia(P + "energia_usata") + " kWh",
