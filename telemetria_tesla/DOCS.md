@@ -28,7 +28,7 @@ Con `discovery` accesa (predefinito) le entita' compaiono da sole nel dispositiv
 con gli entity_id `<dominio>.<prefisso><nome>` (per esempio `sensor.tesla_tele_batteria`). Oltre ai campi della
 telemetria: porte e finestrini aperti, navigazione verso casa, distanza della destinazione da casa (in km, dalla zona
 home di HA), ultimo allarme e ultima allerta della Sentinella, ultimo avviso dello schermo, batteria 12V, ultimo errore
-della telemetria e, se accesi, Sentinella dal parcheggio e capacita' misurata alla ricarica. Se lo scopritore si ferma,
+della telemetria, potenza della batteria, squilibrio delle celle (ad auto ferma) e, se accesi, Sentinella dal parcheggio e capacita' misurata alla ricarica. Se lo scopritore si ferma,
 i valori derivati risultano non disponibili.
 
 ## Opzioni

@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.10.0-7 (beta)
+
+- Battery cells and modules: new entities with the lowest and the highest cell voltage (`tensione_cella_min`,
+  `tensione_cella_max`), which cells they are (`cella_tensione_min`, `cella_tensione_max`) and which module is the
+  coldest and the hottest (`modulo_piu_freddo`, `modulo_piu_caldo`), plus the derived `squilibrio_celle` (mV, highest
+  minus lowest cell voltage). Compare the imbalance with a full battery over time: if it grows, the cells drift apart.
+  They need six new fields in the car configuration: run `tools/configura_auto.py` again.
+- Dashboard: cell voltages, imbalance and the cells and modules at the extremes in the battery section; 30-day imbalance
+  chart.
+
 ## 0.10.0-6 (beta)
 
 - Battery power sign: positive while the battery discharges (driving, consumption with the car parked), negative while

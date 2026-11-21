@@ -122,7 +122,7 @@ with tempfile.TemporaryDirectory() as tmp:
     # 1) scoperta e disponibilita'
     s.collegato()
     conf = [(t, json.loads(p)) for t, p, r in pub if t.endswith("/config") and p]
-    attese = len(tabelle.NUMERI) + len(tabelle.ENUM) + len(tabelle.TESTI) + 2 + len(tabelle.BINARI) + 1 + 1 + 9 + 2  # 9 derivati fissi (dal 18/11 anche la potenza)
+    attese = len(tabelle.NUMERI) + len(tabelle.ENUM) + len(tabelle.TESTI) + 2 + len(tabelle.BINARI) + 1 + 1 + 10 + 2  # 10 derivati fissi (dal 18/11 la potenza, dal 21/11 lo squilibrio delle celle)
     esito(f"scoperta: {len(conf)} entita' con capacita' e parcheggio accesi", len(conf) == attese, f"attese {attese}")
     der = [x for _, x in conf if x["state_topic" if "state_topic" in x else "json_attributes_topic"].startswith(f"telemetria_tesla/{VIN}/derivati/")]
     esito("valori derivati con la disponibilita' dello scopritore", der and all(x.get("availability_topic") == s.disponibile for _, x in conf
@@ -179,6 +179,56 @@ with tempfile.TemporaryDirectory() as tmp:
     conf = {i: c for comp, i, c in s.configurazioni()}
     esito("potenza: entita' in kW con disponibilita'", conf["potenza_batteria"]["unit_of_measurement"] == "kW"
           and conf["potenza_batteria"].get("availability_topic") and "tensione_batteria" in conf and "corrente_batteria" in conf)
+
+    # 3c) squilibrio delle celle: piu' alta meno piu' bassa in mV, 1 s dopo l'ultimo dei due campi, mai in marcia
+    marcia = s.ultimi.pop("Gear", "assente")
+    s.ultimi["Gear"] = "ShiftStateP"
+    sq = lambda da: [json.loads(p)["stato"] for t, p, r in pub[da:] if t == s.derivato("squilibrio_celle") and p]  # noqa: E731
+    n = len(pub)
+    v(s, "BrickVoltageMin", 3.301)
+    ora.t += 2
+    s.tick()
+    esito("squilibrio: con la sola cella piu' bassa niente", sq(n) == [])
+    v(s, "BrickVoltageMax", 3.309)
+    esito("squilibrio: niente subito, si aspetta l'altro campo del pacchetto", sq(n) == [])
+    ora.t += 2
+    s.tick()
+    esito("squilibrio: 3,309 - 3,301 V = 8 mV dopo 1 s", sq(n) == [8.0], sq(n))
+    n = len(pub)
+    v(s, "BrickVoltageMax", 3.52)
+    v(s, "BrickVoltageMin", 3.505)
+    ora.t += 2
+    s.tick()
+    esito("squilibrio: i due campi di un pacchetto in ordine qualsiasi = un solo valore (15 mV), nessuno a meta'", sq(n) == [15.0], sq(n))
+    v(s, "BrickVoltageMax", "3.5175")
+    ora.t += 2
+    s.tick()
+    esito("squilibrio: numero come testo, 3,5175 - 3,505 V = 12,5 mV", ultimo(pub, s, "squilibrio_celle")["stato"] == 12.5)
+    s.ultimi["Gear"] = "ShiftStateD"
+    n = len(pub)
+    v(s, "BrickVoltageMin", 3.40)
+    ora.t += 2
+    s.tick()
+    esito("squilibrio: in marcia nessun valore (dipenderebbe dal carico)", sq(n) == [])
+    s.ultimi["Gear"] = "ShiftStateP"
+    v(s, "BrickVoltageMin", 3.53)
+    ora.t += 2
+    s.tick()
+    esito("squilibrio: piu' bassa sopra la piu' alta = sconosciuto", ultimo(pub, s, "squilibrio_celle")["stato"] is None)
+    v(s, "BrickVoltageMin", None)
+    ora.t += 2
+    s.tick()
+    esito("squilibrio: dato nullo = sconosciuto", ultimo(pub, s, "squilibrio_celle")["stato"] is None)
+    if marcia == "assente":
+        s.ultimi.pop("Gear", None)
+    else:
+        s.ultimi["Gear"] = marcia
+    conf = {i: c for comp, i, c in s.configurazioni()}
+    nuove = ("tensione_cella_min", "tensione_cella_max", "cella_tensione_min", "cella_tensione_max", "modulo_piu_freddo", "modulo_piu_caldo")
+    esito("squilibrio: entita' in mV con disponibilita', piu' le 6 entita' di celle e moduli",
+          conf["squilibrio_celle"]["unit_of_measurement"] == "mV" and conf["squilibrio_celle"].get("availability_topic")
+          and conf["squilibrio_celle"]["device_class"] == "voltage" and all(k in conf for k in nuove)
+          and "state_class" not in conf["cella_tensione_min"] and conf["tensione_cella_max"]["unit_of_measurement"] == "V")
 
     # 4) marcia: parcheggio azzera il conteggio; il valore conservato uguale non conta
     v(s, "Gear", "ShiftStateD")

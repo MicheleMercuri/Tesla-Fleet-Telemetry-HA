@@ -65,6 +65,9 @@ CAMPI = {
     # batteria
     "NominalFullPackEnergyKwh": 3600, "BmsFullchargecomplete": 10, "BatteryHeaterOn": 10,
     "ModuleTempMin": 300, "ModuleTempMax": 300,
+    # estremi delle celle e dei moduli: squilibrio delle celle (piu' alta meno piu' bassa) e moduli piu' freddo e piu' caldo
+    "BrickVoltageMin": 60, "BrickVoltageMax": 60, "NumBrickVoltageMin": 300, "NumBrickVoltageMax": 300,
+    "NumModuleTempMin": 300, "NumModuleTempMax": 300,
     # clima e sedili
     "InsideTemp": 300, "OutsideTemp": 300, "HvacPower": 10, "HvacLeftTemperatureRequest": 30,
     "PreconditioningEnabled": 30, "ClimateKeeperMode": 30, "CabinOverheatProtectionMode": 300,

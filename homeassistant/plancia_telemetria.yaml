@@ -556,8 +556,21 @@ views:
       - type: custom:mushroom-template-card
         entity: sensor.tesla_tele_temp_batteria_max
         primary: Moduli da {% set s = states('sensor.tesla_tele_temp_batteria_min') %}{{ (s | float | round(0)) | string | replace('.', ',') if is_number(s) else '-' }} a {% set s = states('sensor.tesla_tele_temp_batteria_max') %}{{ (s | float | round(0)) | string | replace('.', ',') if is_number(s) else '-' }} °C
-        secondary: 'Il freddo rallenta la carica: sotto i 10 °C l''auto scalda la batteria'
+        secondary: '{% set a = states(''sensor.tesla_tele_modulo_piu_freddo'') %}{% set b = states(''sensor.tesla_tele_modulo_piu_caldo'') %}{% if is_number(a) and is_number(b) %}Più freddo il modulo {{ a | int }}, più caldo il {{ b | int }} · {% endif %}Il freddo rallenta la carica: sotto i 10 °C l''auto scalda la batteria'
         icon: mdi:thermometer
+        color: teal
+        multiline_secondary: true
+        tap_action:
+          action: more-info
+        hold_action:
+          action: more-info
+        card_mod:
+          style: "ha-card {\n  background: rgba(30,30,40,0.6);\n  border: 1px solid rgba(100,100,100,0.3);\n  border-radius: 16px;\n  backdrop-filter: blur(10px);\n}\n"
+      - type: custom:mushroom-template-card
+        entity: sensor.tesla_tele_squilibrio_celle
+        primary: Celle da {% set s = states('sensor.tesla_tele_tensione_cella_min') %}{{ (s | float | round(3)) | string | replace('.', ',') if is_number(s) else '-' }} a {% set s = states('sensor.tesla_tele_tensione_cella_max') %}{{ (s | float | round(3)) | string | replace('.', ',') if is_number(s) else '-' }} V · squilibrio {% set s = states('sensor.tesla_tele_squilibrio_celle') %}{{ (s | float | round(0)) | string | replace('.', ',') if is_number(s) else '-' }} mV
+        secondary: '{% set a = states(''sensor.tesla_tele_cella_tensione_min'') %}{% set b = states(''sensor.tesla_tele_cella_tensione_max'') %}{% if is_number(a) and is_number(b) %}Più bassa la cella {{ a | int }}, più alta la {{ b | int }} · {% endif %}Da confrontare a batteria piena: se cresce nel tempo le celle si sbilanciano'
+        icon: mdi:scale-unbalanced
         color: teal
         multiline_secondary: true
         tap_action:
@@ -641,6 +654,92 @@ views:
           color: '#0072B2'
           statistics:
             type: mean
+            period: day
+            align: middle
+          curve: smooth
+          stroke_width: 2.5
+          show:
+            legend_value: false
+        header:
+          show: false
+        span:
+          end: day
+        card_mod:
+          style: "ha-card {\n  background: rgba(30,30,40,0.6);\n  border: 1px solid rgba(100,100,100,0.3);\n  border-radius: 16px;\n  backdrop-filter: blur(10px);\n}\n"
+      - type: custom:mushroom-title-card
+        title: SQUILIBRIO DELLE CELLE, 30 GIORNI
+        subtitle: ''
+        card_mod:
+          style: "ha-card { padding: 12px 16px 8px 16px; }\n\nha-card .title {\n  margin: 0 !important;\n  font-size: 20px !important;\n  font-weight: 700 !important;\n  line-height: 1.1;\n  display: inline-flex;\n  align-items: center;\n  gap: 10px;\n  background: linear-gradient(90deg, #26a69a, #4db6ac, #26a69a);\n  background-size: 200% auto;\n  -webkit-background-clip: text;\n  -webkit-text-fill-color: transparent;\n  animation: shine 3s linear infinite;\n}\n\nha-card .title::before {\n  content: \"⚖️\";\n  font-size: 20px;\n  line-height: 1;\n  -webkit-text-fill-color: #26a69a;\n  background: none !important;\n  filter: drop-shadow(0 0 8px rgba(38,166,154,0.75));\n}\n\nha-card .subtitle { display: none !important; }\n\nha-card::after {\n  content: \"\";\n  display: block;\n  width: 100%;\n  height: 4px;\n  margin-top: 10px;\n  border-radius: 999px;\n  background-image:\n    linear-gradient(90deg, rgba(38,166,154,0.30), rgba(77,182,172,0.30)),\n    linear-gradient(90deg,\n      transparent 0%,\n      rgba(38,166,154,0.00) 10%,\n      rgba(38,166,154,0.85) 28%,\n      rgba(77,182,172,0.95) 45%,\n      rgba(255,255,255,1.00) 50%,\n      rgba(77,182,172,0.95) 55%,\n      rgba(38,166,154,0.85) 72%,\n      rgba(38,166,154,0.00) 90%,\n      transparent 100%),\n    radial-gradient(circle,\n      rgba(255,255,255,1.00) 0%,\n      rgba(255,255,255,0.80) 30%,\n      rgba(38,166,154,0.50) 55%,\n      transparent 72%);\n  background-size: 100% 100%, 240% 100%, 24px 24px;\n  background-repeat: no-repeat;\n  background-position: 0% 0, 120% 0, -14px 50%;\n  animation: sweep-sec 2.7s ease-in-out infinite alternate;\n  will-change: background-position, opacity;\n  box-shadow:\n    0 0 14px rgba(38,166,154,0.70),\n    0 0 28px rgba(77,182,172,0.45),\n    0 0 4px rgba(255,255,255,0.30);\n  filter:\n    drop-shadow(0 0 8px rgba(255,255,255,0.25))\n    drop-shadow(0 0 14px rgba(38,166,154,0.30));\n  pointer-events: none;\n}\n\n@keyframes shine { to { background-position: 200% center; } }\n\n@keyframes sweep-sec {\n  0%   { background-position: 0% 0, 120% 0, -14px 50%; opacity: 0.70; }\n  50%  { opacity: 1; }\n  100% { background-position: 0% 0, -20% 0, calc(100% + 14px) 50%; opacity: 0.70; }\n}\n"
+      - type: custom:apexcharts-card
+        graph_span: 30d
+        apex_config:
+          chart:
+            height: 170
+            foreColor: '#c9cdd6'
+            fontFamily: inherit
+            toolbar:
+              show: false
+            zoom:
+              enabled: false
+            background: transparent
+          grid:
+            borderColor: rgba(255,255,255,0.07)
+            strokeDashArray: 0
+            xaxis:
+              lines:
+                show: false
+            padding:
+              left: 4
+              right: 8
+              top: -8
+          legend:
+            show: true
+            position: top
+            horizontalAlign: left
+            fontSize: 12px
+            markers:
+              width: 10
+              height: 10
+              radius: 10
+            itemMargin:
+              horizontal: 8
+          dataLabels:
+            enabled: false
+          tooltip:
+            theme: dark
+          xaxis:
+            axisBorder:
+              show: false
+            axisTicks:
+              show: false
+          plotOptions:
+            bar:
+              borderRadius: 5
+              borderRadiusApplication: end
+              columnWidth: 60%
+          markers:
+            size: 4
+            strokeWidth: 0
+        series:
+        - entity: sensor.tesla_tele_squilibrio_celle
+          name: Media del giorno
+          type: line
+          color: '#0072B2'
+          statistics:
+            type: mean
+            period: day
+            align: middle
+          curve: smooth
+          stroke_width: 2.5
+          show:
+            legend_value: false
+        - entity: sensor.tesla_tele_squilibrio_celle
+          name: Massimo del giorno
+          type: line
+          color: '#E69F00'
+          statistics:
+            type: max
             period: day
             align: middle
           curve: smooth

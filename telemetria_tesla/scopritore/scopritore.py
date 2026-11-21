@@ -5,7 +5,8 @@ Legge i messaggi che il server Fleet Telemetry pubblica su MQTT (<topic_base>/<V
   dell'opzione vin, o quello salvato nel file di stato, o (solo la prima volta) quello del primo messaggio;
 - calcola e pubblica i valori derivati: porte e finestrini aperti, navigazione (minuti e km della destinazione da casa,
   calcolati qui dalla zona home di HA, sempre in km), "verso casa", ultimo allarme e ultima allerta della Sentinella,
-  ultimo avviso dello schermo, batteria 12V, ultimo errore della telemetria e, se accesi, conteggio della Sentinella dal
+  ultimo avviso dello schermo, batteria 12V, ultimo errore della telemetria, potenza della batteria, squilibrio delle
+  celle e, se accesi, conteggio della Sentinella dal
   parcheggio e capacita' misurata a ogni ricarica. I valori derivati hanno una loro disponibilita': se lo scopritore si
   ferma, in HA risultano non disponibili (messaggio "testamento" di MQTT);
 - manda le notifiche scelte con un servizio di HA (opzione notifica): allarme e allerta fuori casa della Sentinella,
@@ -38,7 +39,7 @@ import tabelle
 from ha_api import HA, NonRisponde, dettaglio
 
 QUI = Path(__file__).resolve().parent
-VERSIONE = "0.3.3"
+VERSIONE = "0.3.4"
 VIN_RE = re.compile(r"^[A-HJ-NPR-Z0-9]{17}$")
 PORTE = {"DriverFront": "Guida", "DriverRear": "Post. guida", "PassengerFront": "Passeggero", "PassengerRear": "Post. passeggero",
          "TrunkFront": "Frunk", "TrunkRear": "Bagagliaio"}
@@ -57,9 +58,12 @@ ATTESE_NOTIFICA = (20, 60, 120)  # una notifica non riuscita si riprova dopo 20 
 OPZIONI_NON_VALIDE = 78    # codice di uscita per opzioni sbagliate: run.sh non fa ripartire lo scopritore
 ENTITA_SCADENZA = "input_datetime.telemetria_tesla_scadenza"  # la scrive tools/configura_auto.py quando l'auto accetta la configurazione
 DERIVATI = ("porte_aperte", "finestrini_aperti", "navigazione", "ultimo_allarme", "ultima_allerta", "ultimo_avviso", "batteria_12v",
-            "ultimo_errore", "sentinella_parcheggio", "capacita_misurata", "potenza_batteria")
+            "ultimo_errore", "sentinella_parcheggio", "capacita_misurata", "potenza_batteria", "squilibrio_celle")
 NAVIGAZIONE = ("MinutesToArrival", "DestinationLocation")
 POTENZA = ("PackVoltage", "PackCurrent")  # potenza della batteria = tensione per corrente
+CELLE = ("BrickVoltageMin", "BrickVoltageMax")  # squilibrio delle celle = cella piu' alta meno cella piu' bassa
+ATTESA_CELLE_S = 1  # lo squilibrio si calcola 1 s dopo l'ultimo dei due campi: il server manda i campi in ordine casuale
+IN_MARCIA = ("ShiftStateD", "ShiftStateR", "ShiftStateN")
 ORIGINE = {"name": "Telemetria Tesla", "sw_version": VERSIONE, "support_url": "https://github.com/MicheleMercuri/Tesla-Fleet-Telemetry-HA"}
 
 
@@ -193,6 +197,7 @@ class Scopritore:
         self.altri_vin = set()
         self.ultimi = {}
         self.agg_ts = {}           # ora dell'ultimo messaggio nuovo (non conservato) di ogni campo
+        self.celle_da = None       # ora da cui calcolare lo squilibrio delle celle (ATTESA_CELLE_S dopo l'ultimo campo)
         self.sentinella = None     # stato noto in questa connessione (None = sconosciuto)
         self.pubblicati = {}       # ultimo valore pubblicato per ogni valore derivato (si ripubblica solo se cambia)
         self.fin_completi = False  # i finestrini si pubblicano dalla prima volta che sono noti tutti e 4
@@ -312,6 +317,10 @@ class Scopritore:
             ("sensor", "potenza_batteria", {"name": "Potenza della batteria", "state_topic": d("potenza_batteria"),
                                              "value_template": json_stato, "unit_of_measurement": "kW", "device_class": "power",
                                              "state_class": "measurement", "suggested_display_precision": 1, "icon": "mdi:flash"}),
+            ("sensor", "squilibrio_celle", {"name": "Squilibrio delle celle", "state_topic": d("squilibrio_celle"),
+                                             "value_template": json_stato, "unit_of_measurement": "mV", "device_class": "voltage",
+                                             "state_class": "measurement", "suggested_display_precision": 0,
+                                             "icon": "mdi:scale-unbalanced"}),
         ]
         if self.conteggio_parcheggio or tutte:
             derivati.append(("sensor", "sentinella_parcheggio", {
@@ -469,6 +478,8 @@ class Scopritore:
             self.pubblica_navigazione()
         elif nome in POTENZA:
             self.pubblica_potenza()
+        elif nome in CELLE:
+            self.celle_da = self.ora() + ATTESA_CELLE_S  # aspetta l'altro campo dello stesso pacchetto
 
     def pubblica_porte(self, v):
         if isinstance(v, dict):
@@ -515,6 +526,19 @@ class Scopritore:
             return
         v, i = numero(self.ultimi.get("PackVoltage")), numero(self.ultimi.get("PackCurrent"))
         self.pubblica_derivato("potenza_batteria", {"stato": round(-v * i / 1000, 2) + 0.0 if v is not None and i is not None else None})
+
+    def pubblica_squilibrio(self):
+        """Squilibrio delle celle in mV: tensione della cella piu' alta meno quella della piu' bassa (BrickVoltageMax e
+        BrickVoltageMin, in V). Si legge bene a batteria piena e va seguito nel tempo: se cresce, le celle si sbilanciano.
+        Senza tutti e due i valori non si pubblica niente; con la piu' alta sotto la piu' bassa (valori di momenti
+        diversi) il valore resta sconosciuto. Lo chiama tick() ATTESA_CELLE_S dopo l'ultimo dei due campi, perche' il
+        server manda i campi di un pacchetto in ordine casuale: un valore nuovo con l'altro ancora vecchio darebbe picchi
+        falsi. In marcia niente valore (resta l'ultimo da ferma): la differenza fra le celle dipenderebbe dal carico."""
+        if not all(k in self.ultimi for k in CELLE) or self.ultimi.get("Gear") in IN_MARCIA:
+            return
+        lo, hi = numero(self.ultimi.get("BrickVoltageMin")), numero(self.ultimi.get("BrickVoltageMax"))
+        ok = lo is not None and hi is not None and hi >= lo
+        self.pubblica_derivato("squilibrio_celle", {"stato": round((hi - lo) * 1000, 1) + 0.0 if ok else None})
 
     def a_casa(self):
         """Prima la posizione GPS dentro la zona home di HA; solo se mancano la posizione o la zona, "A casa" dell'auto
@@ -924,6 +948,9 @@ class Scopritore:
     # ------------------------------------------------------------------ controlli periodici (ogni 5 s)
     def tick(self):
         adesso = self.ora()
+        if self.celle_da is not None and adesso >= self.celle_da:
+            self.celle_da = None
+            self.pubblica_squilibrio()
         for nome, a in list(self.in_attesa.items()):
             if adesso >= a["scade"]:
                 del self.in_attesa[nome]
